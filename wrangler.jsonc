@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "erasuite-site",
+  "account_id": "02f00bd6bcd6b515d4dac565f620d92c",
   "main": "src/worker.js",
   "compatibility_date": "2026-11-01",
   "assets": {
