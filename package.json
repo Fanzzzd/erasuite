@@ -1,0 +1,10 @@
+{
+  "name": "erasuite-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "node test/worker.test.mjs",
+    "deploy": "node test/worker.test.mjs && wrangler deploy"
+  }
+}

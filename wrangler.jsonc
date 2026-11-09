@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "erasuite-site",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": true
+  },
+  "routes": [
+    { "pattern": "erasuite.dev", "custom_domain": true },
+    { "pattern": "www.erasuite.dev", "custom_domain": true },
+    { "pattern": "db.erasuite.dev", "custom_domain": true },
+    { "pattern": "infra.erasuite.dev", "custom_domain": true },
+    { "pattern": "mesh.erasuite.dev", "custom_domain": true }
+  ]
+}

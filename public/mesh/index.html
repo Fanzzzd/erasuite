@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EraMesh: a private network for your devices</title>
+<meta name="description" content="A private network for your own devices with direct, relayed and TCP paths. In development, not released.">
+<link rel="canonical" href="https://mesh.erasuite.dev/">
+<meta property="og:title" content="EraMesh: a private network for your devices">
+<meta property="og:description" content="A private network for your own devices with direct, relayed and TCP paths. In development, not released.">
+<meta property="og:url" content="https://mesh.erasuite.dev/">
+<meta name="theme-color" content="#e9edeb">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
+  <nav class="site-nav" aria-label="Products">
+    <a href="https://mesh.erasuite.dev/" aria-current="page">EraMesh</a>
+    <a href="https://db.erasuite.dev/">EraDB</a>
+    <a href="https://infra.erasuite.dev/">EraInfra</a>
+  </nav>
+</header>
+<main id="main">
+  <div class="product-band litho-amethyst">
+    <h1>EraMesh</h1>
+    <p>EraMesh connects your own computers, phones and servers into one private network. It uses a direct path when it can, relays through another of your devices when it cannot, and carries traffic over TCP when UDP is blocked.</p>
+  </div>
+  <div class="product-body" style="--tone: var(--amethyst)">
+    <div>
+      <section>
+        <h2>Who it is for</h2>
+        <p>People who run their own servers and want every device reachable from anywhere, with control over which machine their traffic leaves through and in what order to try them.</p>
+      </section>
+      <section>
+        <h2>How it compares</h2>
+        <ul>
+          <li><strong>Tailscale</strong> is mature, runs on every major platform and is the better choice today. EraMesh differs in ordered exit priorities, relaying only through your own devices, and QUIC carried over TCP when a network blocks UDP.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>What works today</h2>
+        <ul>
+          <li>A Rust core and the <code>fp</code> command-line tool.</li>
+          <li>SOCKS and HTTP proxy, application UDP, tunneled DNS and static port forwards.</li>
+          <li>A full-device tunnel on Linux.</li>
+          <li>Desktop, Android, iPhone and Apple TV apps that share the same core.</li>
+        </ul>
+      </section>
+      <section class="status">
+        <h2>Limits</h2>
+        <ul>
+          <li>The full-device tunnel stays off on macOS and Windows until leak prevention is in place.</li>
+          <li>The apps have run in emulators and simulators. No platform has passed full acceptance testing.</li>
+          <li>There is no release, and the source is not public yet.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Get it</h2>
+        <p>EraMesh is not available yet. This page will link to the source and downloads when the first release is ready.</p>
+      </section>
+    </div>
+  <aside class="mini-column" aria-label="Era Suite products">
+    <h2>Era Suite</h2>
+    <ul>
+      <li><a class="litho-amethyst" href="https://mesh.erasuite.dev/" aria-current="page">EraMesh</a></li>
+      <li><a class="litho-basalt" href="https://db.erasuite.dev/">EraDB</a></li>
+      <li><a class="litho-olivine" href="https://infra.erasuite.dev/">EraInfra</a></li>
+    </ul>
+    <p><a class="home-link" href="https://erasuite.dev/">All products</a></p>
+  </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+</footer>
+</body>
+</html>

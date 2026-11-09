@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EraInfra: GitHub Actions on your own machines</title>
+<meta name="description" content="Self-hosted GitHub Actions runners with a fresh VM per job and no public IP needed.">
+<link rel="canonical" href="https://infra.erasuite.dev/">
+<meta property="og:title" content="EraInfra: GitHub Actions on your own machines">
+<meta property="og:description" content="Self-hosted GitHub Actions runners with a fresh VM per job and no public IP needed.">
+<meta property="og:url" content="https://infra.erasuite.dev/">
+<meta name="theme-color" content="#e9edeb">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
+  <nav class="site-nav" aria-label="Products">
+    <a href="https://mesh.erasuite.dev/">EraMesh</a>
+    <a href="https://db.erasuite.dev/">EraDB</a>
+    <a href="https://infra.erasuite.dev/" aria-current="page">EraInfra</a>
+  </nav>
+</header>
+<main id="main">
+  <div class="product-band litho-olivine">
+    <h1>EraInfra</h1>
+    <p>EraInfra runs GitHub Actions jobs on Linux, Mac and Windows machines you already own. Each job gets a fresh, isolated environment that is destroyed afterwards. Machines connect out to the control plane, so none of them needs a public IP.</p>
+  </div>
+  <div class="product-body" style="--tone: var(--olivine)">
+    <div>
+      <section>
+        <h2>Who it is for</h2>
+        <p>Teams and individuals with spare hardware, such as a home server, a Mac mini or office machines, who want to run CI on it without giving every job a long-lived host. Workflows change one line: <code>runs-on: rc-linux-js</code>.</p>
+      </section>
+      <section>
+        <h2>How it compares</h2>
+        <ul>
+          <li><strong>GitHub-hosted runners</strong> need nothing to operate. EraInfra can send a run to them when no machine of yours is free.</li>
+          <li><strong>A plain self-hosted runner</strong> reuses the same host between jobs. EraInfra prepares an environment for one job and removes it on every exit path, including Worker crashes.</li>
+          <li><strong>Actions Runner Controller</strong> is the better choice when your whole fleet already runs Kubernetes. EraInfra targets machines without a cluster, including ones behind NAT or a home router.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>What works today</h2>
+        <table class="matrix">
+          <thead><tr><th scope="col">Platform</th><th scope="col">Executor</th><th scope="col">Isolation</th></tr></thead>
+          <tbody>
+            <tr><td>Linux x64 and ARM64</td><td>Firecracker</td><td>Own guest kernel per job. Use this for untrusted code. Needs KVM.</td></tr>
+            <tr><td>Linux x64 and ARM64</td><td>Docker</td><td>Shares the host kernel. Only for jobs that trust each other.</td></tr>
+            <tr><td>Apple Silicon macOS</td><td>Tart</td><td>Copy-on-write VM per job, two at a time by default.</td></tr>
+            <tr><td>Windows x64</td><td>Hyper-V</td><td>Ready once the machine proves Hyper-V works.</td></tr>
+          </tbody>
+        </table>
+        <p>The project's own fleet has run its Linux jobs in Firecracker microVMs since 20 August 2026.</p>
+      </section>
+      <section class="status">
+        <h2>Limits</h2>
+        <ul>
+          <li>The control plane, scheduler and dashboard run on Convex, so you need a Convex deployment.</li>
+          <li>Firecracker Workers need KVM and dedicated runtime storage.</li>
+          <li>macOS Workers run at most two VMs by default, to stay within Apple's virtualization license.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Get started</h2>
+        <ol>
+          <li>Deploy the Convex backend and dashboard from the repository.</li>
+          <li>In the dashboard, open Machines, choose Add machine, and run the generated install command on each host.</li>
+          <li>Point a workflow at a Profile with <code>runs-on</code>.</li>
+        </ol>
+        <p><a class="button" href="https://github.com/Fanzzzd/erainfra">Read the setup guide on GitHub</a></p>
+      </section>
+    </div>
+  <aside class="mini-column" aria-label="Era Suite products">
+    <h2>Era Suite</h2>
+    <ul>
+      <li><a class="litho-amethyst" href="https://mesh.erasuite.dev/">EraMesh</a></li>
+      <li><a class="litho-basalt" href="https://db.erasuite.dev/">EraDB</a></li>
+      <li><a class="litho-olivine" href="https://infra.erasuite.dev/" aria-current="page">EraInfra</a></li>
+    </ul>
+    <p><a class="home-link" href="https://erasuite.dev/">All products</a></p>
+  </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+</footer>
+</body>
+</html>

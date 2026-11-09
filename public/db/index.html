@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EraDB: local-first TypeScript database</title>
+<meta name="description" content="A local-first TypeScript application database with PostgreSQL as the authority. Release candidate, not yet published.">
+<link rel="canonical" href="https://db.erasuite.dev/">
+<meta property="og:title" content="EraDB: local-first TypeScript database">
+<meta property="og:description" content="A local-first TypeScript application database with PostgreSQL as the authority. Release candidate, not yet published.">
+<meta property="og:url" content="https://db.erasuite.dev/">
+<meta name="theme-color" content="#e9edeb">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
+  <nav class="site-nav" aria-label="Products">
+    <a href="https://mesh.erasuite.dev/">EraMesh</a>
+    <a href="https://db.erasuite.dev/" aria-current="page">EraDB</a>
+    <a href="https://infra.erasuite.dev/">EraInfra</a>
+  </nav>
+</header>
+<main id="main">
+  <div class="product-band litho-basalt">
+    <h1>EraDB</h1>
+    <p>EraDB is a local-first TypeScript application database. Your app reads from durable local storage and shows the predicted result of a command immediately. PostgreSQL stays the authority, and every query result says whether the local data is complete.</p>
+  </div>
+  <div class="product-body" style="--tone: var(--basalt)">
+    <div>
+      <section>
+        <h2>Who it is for</h2>
+        <p>App developers who want a typed, realtime backend in the style of Convex, running on their own PostgreSQL instead of a hosted service.</p>
+      </section>
+      <section>
+        <h2>How it compares</h2>
+        <ul>
+          <li><strong>Convex</strong> is the model EraDB follows, and it is hosted and in production use today. EraDB scores itself against every Convex capability, and that check currently fails.</li>
+          <li><strong>PostgreSQL with your own API</strong> leaves sync, local caching and optimistic updates to you. EraDB includes them, with ordered WebSocket sync and policy checks on the server.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>What it includes</h2>
+        <ul>
+          <li>A typed schema, query and command core with a build-time command compiler.</li>
+          <li>A durable browser Worker and local client, with React and other framework bindings and native clients.</li>
+          <li>PostgreSQL execution, server functions, scheduling, file storage, search and auth.</li>
+          <li>A CLI, a dashboard and a self-host control plane.</li>
+        </ul>
+      </section>
+      <section class="status">
+        <h2>Limits</h2>
+        <ul>
+          <li>Release candidate 0.1.0-rc.1. Its 22 packages build as local tarballs and none is published to npm.</li>
+          <li>Self-hosting works with a locally built control-plane image and PostgreSQL. There is no hosted service.</li>
+          <li>The source is not public yet.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Get it</h2>
+        <p>EraDB is not available for download yet. This page will link to the source and packages when they are published.</p>
+      </section>
+    </div>
+  <aside class="mini-column" aria-label="Era Suite products">
+    <h2>Era Suite</h2>
+    <ul>
+      <li><a class="litho-amethyst" href="https://mesh.erasuite.dev/">EraMesh</a></li>
+      <li><a class="litho-basalt" href="https://db.erasuite.dev/" aria-current="page">EraDB</a></li>
+      <li><a class="litho-olivine" href="https://infra.erasuite.dev/">EraInfra</a></li>
+    </ul>
+    <p><a class="home-link" href="https://erasuite.dev/">All products</a></p>
+  </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+</footer>
+</body>
+</html>
