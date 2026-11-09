@@ -19,5 +19,8 @@ pnpm dev       # local Worker preview
 pnpm deploy    # tests, then wrangler deploy
 ```
 
+Pushing to `main` runs the same tests in GitHub Actions and deploys with the
+`CLOUDFLARE_API_TOKEN` repository secret. Pull requests run the tests only.
+
 Product facts on each page come from that product's README. Update the page when the
 product's status changes, and keep the limits section accurate.
