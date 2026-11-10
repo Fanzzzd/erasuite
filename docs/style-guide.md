@@ -510,7 +510,10 @@ Keep these. They need no change.
 
 ### Kotlin
 
-- ktlint with the official style, run in CI.
+- ktlint 1.8.0 through the `org.jlleitschuh.gradle.ktlint` plugin, run in CI as
+  `ktlintCheck`. Use the `intellij_idea` style at 120 columns: it matches the
+  `kotlin.code.style=official` setting the projects already declare, and it
+  reformatted 16 EraDB files where `ktlint_official` would have rewritten 33.
 - Library modules use `explicitApi()`, as EraDB does
   (`clients/kotlin/build.gradle.kts:20`).
 - Errors are a sealed exception hierarchy (EraDB `Errors.kt:60-87`).
@@ -522,7 +525,9 @@ Keep these. They need no change.
   what EraDB's Swift client uses; EraDB's `Sources` pass `swift-format lint --strict`
   with no findings.
 - Strict concurrency on (EraDB `Package.swift:21`). One `Package.swift` per package:
-  EraDB keeps two in step by hand (`Package.swift:7-8`); generate or remove one.
+  EraDB keeps two in step by hand (`Package.swift:7-8`). Where two must exist, make
+  one the source of truth and fail CI on drift: EraDB compares both through
+  `swift package dump-package` in `scripts/ci/check-swift-manifests.mjs`.
 
 ### Shell and PowerShell
 
