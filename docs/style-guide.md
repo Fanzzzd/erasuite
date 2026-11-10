@@ -152,10 +152,12 @@ Smallest change:
   | Apple bundle IDs, Swift package `FastPipeKit` | `dev.erasuite.eramesh`, `EraMeshKit` |
   | UniFFI module `FpmeshFFI` | `EraMeshFFI` |
 
-  The owner's live exit already holds the `fp` CLI name, the `FP_*` environment
-  variables, state paths, protocol identifiers, the `fastpipe-mesh.service` unit and
-  the `sh.local.fastpipe-mesh` launchd label. These stay, listed as frozen in
-  `CONTEXT.md` with the reason for each.
+  The owner runs every EraMesh device, so the names a running system holds change
+  too: the `fp` CLI becomes `eramesh`, `FP_*` variables become `ERAMESH_*`, and state
+  paths, service names and protocol identifiers move to `eramesh`. All devices update
+  together, and one script, `scripts/migrate-from-fastpipe.sh`, moves the live exit's
+  state and services. The product code keeps no compatibility path for the old names.
+  The script is deleted once every device has moved.
 
 ### 4. Every repository has CI that runs the local gate
 
@@ -583,8 +585,9 @@ Ordered by value per unit of effort. The first items take minutes.
 6. Add `LICENSE` with the MIT text EraInfra uses, and `license = "MIT"` in the
    manifests (rule 8).
 7. Move status wording into `mesh/src/app/view.rs` (rule 2).
-8. Rename crates, scope and bundle IDs to EraMesh in one commit, and list frozen
-   identifiers in a new `CONTEXT.md` (rule 3).
+8. Rename every identifier to EraMesh, including the CLI, environment variables,
+   state paths and protocol identifiers, and move the live exit with the migration
+   script (rule 3).
 9. Split `mesh/src/node.rs` along its seams (rule 5).
 
 ### EraDB
