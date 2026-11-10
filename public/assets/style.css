@@ -1,14 +1,38 @@
+/*
+ * Era Suite site styles.
+ *
+ * The site reads like a geological section: each project is a rock bed, the
+ * youngest on top. On the home page a bed's width is its release maturity,
+ * so the one chart on the site carries real information.
+ */
+
+@font-face {
+  font-family: "Archivo";
+  src: url("/assets/fonts/archivo-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --chalk: #e9edeb;
-  --chalk-deep: #dde3e0;
-  --ink: #22292e;
-  --ink-soft: #4b565c;
-  --schist: #9aa6a3;
-  --basalt: #2e5e7e;
-  --olivine: #5f7a2e;
+  --paper: #e9edeb;
+  --paper-deep: #dce2df;
+  --ink: #1f272c;
+  --ink-soft: #4a555b;
+  --rule: #7d8a87;
+  --rule-faint: #b9c2bf;
   --amethyst: #6b4f86;
-  --measure: 34rem;
-  --font: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --basalt: #2e5e7e;
+  --olivine: #4f6a24;
+  --measure: 36rem;
+  --age-col: 8.5rem;
+  --track-col: minmax(12rem, 30rem);
+  --text-col: minmax(16rem, 30rem);
+  --col-gap: clamp(1rem, 2.5vw, 2rem);
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --font: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 *,
@@ -18,12 +42,13 @@
 }
 
 html {
-  background: var(--chalk);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font);
   font-size: 100%;
   line-height: 1.55;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -31,6 +56,11 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-size: 1.0625rem;
+}
+
+main {
+  flex: 1;
 }
 
 a {
@@ -48,55 +78,70 @@ a:hover {
   outline-offset: 3px;
 }
 
+code,
+pre {
+  font-family: var(--mono);
+  font-size: 0.875em;
+}
+
 code {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.9em;
-  background: var(--chalk-deep);
+  background: var(--paper-deep);
   padding: 0.05em 0.3em;
   border-radius: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 
 .skip {
   position: absolute;
   left: -999px;
+  top: 1rem;
+  z-index: 10;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 0.75rem;
 }
 
 .skip:focus {
   left: 1rem;
-  top: 1rem;
-  background: var(--ink);
-  color: var(--chalk);
-  padding: 0.5rem 0.75rem;
-  z-index: 10;
 }
 
-/* Site header */
+/* Header and footer */
 
 .site-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1.5rem clamp(1.25rem, 5vw, 4rem);
+  gap: 0.5rem 1.5rem;
+  padding: 1.25rem var(--gutter);
 }
 
 .wordmark {
   font-weight: 800;
-  font-size: 1.125rem;
-  letter-spacing: -0.02em;
+  font-stretch: 125%;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
   text-decoration: none;
 }
 
 .site-nav {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
   font-size: 0.9375rem;
 }
 
 .site-nav a {
-  text-decoration: none;
   color: var(--ink-soft);
+  text-decoration: none;
 }
 
 .site-nav a:hover,
@@ -105,310 +150,632 @@ code {
   text-decoration: underline;
 }
 
-main {
-  flex: 1;
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding: 1.5rem var(--gutter) 2rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 0.875rem;
 }
 
-/* Lithology patterns, after geological map symbols */
+.site-footer p {
+  margin: 0;
+  max-width: var(--measure);
+}
+
+/* Lithology fills, after geological map symbols: crosses for basalt,
+   grains for olivine, dashes for the banded amethyst. */
+
+.litho-amethyst {
+  --tone: var(--amethyst);
+  background-color: var(--amethyst);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='16'%3E%3Cpath d='M2 5h14M22 5h16M10 12h18' stroke='%23ffffff' stroke-opacity='.17' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
+}
 
 .litho-basalt {
   --tone: var(--basalt);
   background-color: var(--basalt);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='24'%3E%3Cpath d='M4 6l4 4M8 6l-4 4M18 16l4 4M22 16l-4 4' stroke='%23ffffff' stroke-opacity='.16' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='24'%3E%3Cpath d='M4 6l4 4M8 6l-4 4M18 16l4 4M22 16l-4 4' stroke='%23ffffff' stroke-opacity='.17' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
 }
 
 .litho-olivine {
   --tone: var(--olivine);
   background-color: var(--olivine);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='18'%3E%3Ccircle cx='4' cy='5' r='1.3' fill='%23ffffff' fill-opacity='.18'/%3E%3Ccircle cx='15' cy='13' r='1.3' fill='%23ffffff' fill-opacity='.18'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='18'%3E%3Ccircle cx='4' cy='5' r='1.3' fill='%23ffffff' fill-opacity='.2'/%3E%3Ccircle cx='15' cy='13' r='1.3' fill='%23ffffff' fill-opacity='.2'/%3E%3C/svg%3E");
 }
 
-.litho-amethyst {
-  --tone: var(--amethyst);
-  background-color: var(--amethyst);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='16'%3E%3Cpath d='M2 5h14M22 5h16M10 12h18' stroke='%23ffffff' stroke-opacity='.16' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
+/* Home: introduction */
+
+.intro {
+  padding: clamp(2rem, 6vw, 4.5rem) var(--gutter) clamp(2rem, 4vw, 3rem);
 }
 
-/* Home */
-
-.home {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: clamp(2rem, 6vw, 6rem);
-  align-items: end;
-  padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
-}
-
-.home-intro h1 {
-  font-size: clamp(3.5rem, 9vw, 7.5rem);
+.intro h1 {
+  font-size: clamp(3.25rem, 11vw, 9.5rem);
   font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  margin: 0 0 1.75rem;
+  font-stretch: 125%;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.5rem;
 }
 
-.home-intro .lede {
-  font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
-  line-height: 1.45;
-  max-width: var(--measure);
-  margin: 0 0 1.25rem;
-}
-
-.home-intro .note {
-  color: var(--ink-soft);
+.intro p {
   max-width: var(--measure);
   margin: 0;
 }
 
-.column {
+.intro .lede {
+  font-size: clamp(1.1875rem, 1.9vw, 1.4375rem);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.intro .note {
+  color: var(--ink-soft);
+}
+
+/* Home: the section. Each row is age | bed | description. */
+
+.section {
+  margin: 0;
+  padding: 0 var(--gutter) clamp(3rem, 6vw, 5rem);
+}
+
+/* Cap the width at the three columns' maximum so a row's focus outline
+   ends where its content ends. */
+.beds,
+.axis {
+  max-width: 72.5rem;
+}
+
+.beds {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-left: 2px solid var(--ink);
-  padding-left: 1rem;
 }
 
-.stratum {
+.bed {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--age-col) var(--track-col) var(--text-col);
+  column-gap: var(--col-gap);
+}
+
+.bed-age {
+  padding-top: 1.25rem;
+  font-stretch: 75%;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.bed-age strong {
   display: block;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* The track holds the bed. Faint lines mark the maturity ticks so the
+   reader can see which tick each bed reaches. */
+.bed-track {
+  display: flex;
+  border-left: 3px solid var(--ink);
+  background-image:
+    linear-gradient(var(--rule-faint), var(--rule-faint)),
+    linear-gradient(var(--rule-faint), var(--rule-faint));
+  background-size: 1px 100%;
+  background-position: 40% 0, 70% 0;
+  background-repeat: no-repeat;
+}
+
+.bed-rock {
+  width: calc(var(--maturity) * 100%);
+  padding: 1.25rem 1rem 1.25rem 1.125rem;
   color: #fff;
+  border-bottom: 3px solid var(--paper);
+}
+
+.bed:last-child .bed-rock {
+  border-bottom: 0;
+}
+
+.bed-rock h3 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.2vw, 1.875rem);
+  font-weight: 800;
+  font-stretch: 100%;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.bed-rock a {
   text-decoration: none;
-  padding: 1.5rem 1.5rem 1.375rem;
-  border-bottom: 2px solid var(--chalk);
 }
 
-.stratum:hover {
-  filter: brightness(1.08);
+/* The whole row is one link target; the name is the accessible link. */
+.bed-rock a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
 
-.stratum:hover .stratum-name {
+.bed-rock a:focus-visible {
+  outline: none;
+}
+
+.bed:has(a:focus-visible) {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.bed:hover .bed-rock h3 {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.12em;
 }
 
-.stratum-thick {
-  padding-block: 2.25rem 2rem;
+.bed-text {
+  padding: 1.25rem 0 1.5rem;
+  border-bottom: 1px solid var(--rule-faint);
 }
 
-.stratum-name {
-  display: block;
-  font-size: clamp(1.75rem, 3vw, 2.375rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  margin-bottom: 0.5rem;
+.bed:last-child .bed-text {
+  border-bottom: 0;
 }
 
-.stratum-desc {
-  display: block;
-  max-width: 30rem;
-  font-size: 1.0625rem;
-  line-height: 1.4;
-}
-
-.stratum-status {
-  display: block;
-  margin-top: 0.75rem;
-  font-size: 0.9375rem;
-  opacity: 0.86;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .column .stratum {
-    animation: settle 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  }
-  .column li:nth-child(2) .stratum {
-    animation-delay: 140ms;
-  }
-  .column li:nth-child(3) .stratum {
-    animation-delay: 280ms;
-  }
-}
-
-@keyframes settle {
-  from {
-    opacity: 0;
-    transform: translateY(-14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Product pages */
-
-.product-band {
-  color: #fff;
-  padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 4rem) clamp(2.5rem, 5vw, 3.5rem);
-}
-
-.product-band h1 {
-  font-size: clamp(3rem, 8vw, 6.25rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  margin: 0 0 1.25rem;
-}
-
-.product-band p {
-  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
-  line-height: 1.4;
-  max-width: 38rem;
+.bed-text p {
   margin: 0;
 }
 
-.product-body {
+.bed-state {
+  margin-top: 0.5rem !important;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+/* The maturity axis sits under the track column only. */
+.axis {
   display: grid;
-  grid-template-columns: minmax(0, 40rem) minmax(0, 14rem);
-  justify-content: space-between;
-  gap: 3rem;
-  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 5vw, 4rem) 4rem;
+  grid-template-columns: var(--age-col) var(--track-col) var(--text-col);
+  column-gap: var(--col-gap);
 }
 
-.product-body h2 {
-  font-size: 1.5rem;
+.axis-scale {
+  grid-column: 2;
+  position: relative;
+  height: 2.75rem;
+  border-top: 3px solid var(--ink);
+  border-left: 3px solid var(--ink);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-stretch: 75%;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--ink-soft);
+}
+
+.axis-scale li {
+  position: absolute;
+  top: 0;
+  right: calc(100% - var(--at));
+  padding: 0.5rem 0.4rem 0 0;
+  border-right: 1px solid var(--rule);
+  text-align: right;
+  max-width: 30%;
+}
+
+.axis-caption {
+  grid-column: 2 / 4;
+  max-width: var(--measure);
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bed-rock {
+    animation: deposit 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  /* Oldest bed first, the way rock is laid down. */
+  .bed:nth-child(3) .bed-rock {
+    animation-delay: 100ms;
+  }
+  .bed:nth-child(2) .bed-rock {
+    animation-delay: 320ms;
+  }
+  .bed:nth-child(1) .bed-rock {
+    animation-delay: 540ms;
+  }
+}
+
+@keyframes deposit {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* Home: about */
+
+.about {
+  display: grid;
+  grid-template-columns: var(--age-col) minmax(0, var(--measure));
+  column-gap: var(--col-gap);
+  padding: 0 var(--gutter) clamp(3rem, 6vw, 4.5rem);
+}
+
+.about h2 {
+  margin: 0.15rem 0 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-stretch: 75%;
+  text-align: right;
+}
+
+.about p {
+  margin: 0 0 0.75rem;
+}
+
+/* Product pages: the band */
+
+.band {
+  color: #fff;
+  padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) clamp(2rem, 4vw, 2.75rem);
+}
+
+.band h1 {
+  font-size: clamp(3rem, 9.5vw, 7.5rem);
   font-weight: 800;
+  font-stretch: 125%;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.25rem;
+}
+
+.band .oneliner {
+  font-size: clamp(1.1875rem, 2vw, 1.4375rem);
+  line-height: 1.4;
+  max-width: 40rem;
+  margin: 0 0 2rem;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 13rem));
+  gap: 1rem clamp(1rem, 3vw, 2.5rem);
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 0.45);
+  max-width: 58rem;
+}
+
+.facts dt {
+  font-stretch: 75%;
+  font-size: 0.875rem;
+  opacity: 0.85;
+}
+
+.facts dd {
+  margin: 0.125rem 0 0;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.facts a {
+  text-decoration-thickness: 1px;
+}
+
+.band :focus-visible {
+  outline-color: #fff;
+}
+
+/* Product pages: body */
+
+.product {
+  display: grid;
+  grid-template-columns: minmax(0, 44rem) minmax(0, 14rem);
+  justify-content: start;
+  gap: 3rem clamp(3rem, 8vw, 7rem);
+  padding: clamp(2.5rem, 5vw, 4rem) var(--gutter) 4.5rem;
+}
+
+.product section + section {
+  margin-top: 3rem;
+}
+
+.product h2 {
+  font-size: 1.625rem;
+  font-weight: 750;
+  font-stretch: 112%;
   letter-spacing: -0.02em;
-  margin: 2.5rem 0 0.75rem;
+  line-height: 1.15;
+  margin: 0 0 0.875rem;
 }
 
-.product-body section:first-child h2 {
-  margin-top: 0;
-}
-
-.product-body p,
-.product-body li {
+.product p,
+.product li {
   max-width: var(--measure);
 }
 
-.product-body ul {
-  padding-left: 1.2rem;
+.product p {
+  margin: 0 0 0.875rem;
 }
 
-.product-body li + li {
-  margin-top: 0.35rem;
+.product ul,
+.product ol {
+  margin: 0 0 0.875rem;
+  padding-left: 1.25rem;
 }
 
-.status {
-  border-left: 6px solid var(--tone, var(--ink));
-  padding: 0.25rem 0 0.25rem 1rem;
+.product li + li {
+  margin-top: 0.4rem;
 }
 
-.matrix {
-  border-collapse: collapse;
+.product pre {
+  margin: 0 0 1rem;
+  padding: 1rem 1.125rem;
+  background: var(--paper-deep);
+  border-left: 4px solid var(--tone);
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+.product pre code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+.comment {
+  color: var(--ink-soft);
+}
+
+/* Tables: evidence, executors and comparisons */
+
+.table {
   width: 100%;
-  max-width: 40rem;
+  border-collapse: collapse;
   font-size: 0.9375rem;
+  line-height: 1.45;
+  margin: 0 0 1rem;
 }
 
-.matrix th,
-.matrix td {
+.table th,
+.table td {
   text-align: left;
   vertical-align: top;
-  padding: 0.6rem 0.75rem 0.6rem 0;
-  border-bottom: 1px solid var(--schist);
+  padding: 0.7rem 1rem 0.7rem 0;
+  border-bottom: 1px solid var(--rule-faint);
 }
 
-.matrix th {
+.table thead th {
   font-weight: 600;
+  font-stretch: 75%;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--ink);
+  padding-top: 0;
+}
+
+.table tbody th {
+  font-weight: 650;
+}
+
+.table td:last-child,
+.table th:last-child {
+  padding-right: 0;
+}
+
+/* Limits get a hatched rule, the map symbol for a disturbed zone. */
+.limits {
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.limits::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  bottom: 0;
+  width: 0.625rem;
+  background: repeating-linear-gradient(-45deg, var(--tone) 0 3px, transparent 3px 7px);
 }
 
 .button {
   display: inline-block;
   background: var(--ink);
-  color: var(--chalk);
+  color: var(--paper);
   text-decoration: none;
   font-weight: 600;
-  padding: 0.7rem 1.1rem;
-  border-radius: 4px;
+  padding: 0.75rem 1.125rem;
+  border-radius: 3px;
 }
 
 .button:hover {
-  background: var(--tone, var(--ink));
+  background: var(--tone);
 }
 
-.mini-column {
+/* Product pages: the small section in the margin */
+
+.minisection {
+  align-self: start;
+  position: sticky;
+  top: 1.5rem;
   font-size: 0.9375rem;
 }
 
-.mini-column h2 {
-  font-size: 1rem;
-  margin-top: 0;
-}
-
-.mini-column ul {
-  list-style: none;
-  padding: 0 0 0 0.75rem;
-  border-left: 2px solid var(--ink);
-  margin: 0;
-}
-
-.mini-column li + li {
-  margin-top: 0;
-}
-
-.mini-column ul a {
-  display: block;
-  color: #fff;
-  text-decoration: none;
+.minisection h2 {
+  font-size: 0.9375rem;
   font-weight: 600;
-  padding: 0.6rem 0.75rem;
-  border-bottom: 2px solid var(--chalk);
+  font-stretch: 75%;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+  margin: 0 0 0.5rem;
 }
 
-.mini-column ul a:hover {
+.minisection ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 3px solid var(--ink);
+}
+
+.minisection li + li {
+  margin-top: 0;
+}
+
+.minisection ol a {
+  display: block;
+  width: calc(var(--maturity) * 100%);
+  min-width: max-content;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid var(--paper);
+  color: #fff;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.minisection ol a:hover {
   text-decoration: underline;
 }
 
-.mini-column ul a[aria-current="page"] {
-  outline: 2px solid var(--ink);
-  outline-offset: -2px;
+.minisection ol a[aria-current="page"] {
+  box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 4px #fff;
 }
 
-.home-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-}
-
-/* Footer */
-
-.site-footer {
-  padding: 1.5rem clamp(1.25rem, 5vw, 4rem) 2rem;
+.minisection p {
+  margin: 0.75rem 0 0;
   color: var(--ink-soft);
   font-size: 0.875rem;
-  border-top: 1px solid var(--schist);
-}
-
-.site-footer p {
-  margin: 0;
+  line-height: 1.4;
 }
 
 /* Not found */
 
 .not-found {
-  padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 4rem);
+  padding: clamp(3rem, 8vw, 6rem) var(--gutter);
 }
 
 .not-found h1 {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  letter-spacing: -0.04em;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: 800;
+  font-stretch: 125%;
+  letter-spacing: -0.03em;
+  line-height: 1;
   margin: 0 0 1rem;
 }
 
-@media (max-width: 52rem) {
-  .home {
-    grid-template-columns: 1fr;
-    align-items: start;
+.not-found p {
+  max-width: var(--measure);
+}
+
+/* Narrow screens */
+
+@media (max-width: 60rem) {
+  .product {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .product-body {
-    grid-template-columns: 1fr;
+  .minisection {
+    position: static;
+    max-width: 18rem;
+  }
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 30rem) {
-  .site-header {
+@media (max-width: 52rem) {
+  .bed,
+  .axis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bed-age {
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    text-align: left;
+  }
+  .bed-age strong {
+    display: inline;
+  }
+  .bed-track {
+    border-left-width: 3px;
+  }
+  .bed-rock {
+    min-height: 4.5rem;
+    border-bottom: 0;
+  }
+  .bed-text {
+    padding-top: 0.875rem;
+  }
+  /* On one column the axis moves above the beds, so the reader learns
+     what width means before reading the first bed. */
+  .section {
+    display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+  }
+  .axis {
+    order: -1;
+  }
+  .axis-caption {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0 0 0.75rem;
+  }
+  .axis-scale {
+    grid-column: 1;
+    grid-row: 2;
+    border-top: 0;
+    border-bottom: 3px solid var(--ink);
+  }
+  .axis-scale li {
+    top: auto;
+    bottom: 0;
+    padding: 0 0.4rem 0.4rem 0;
+  }
+  .about {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .about h2 {
+    text-align: left;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .table-stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .table-stack tr {
+    display: block;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--rule-faint);
+  }
+  .table-stack th,
+  .table-stack td {
+    display: block;
+    border: 0;
+    padding: 0.125rem 0;
+  }
+  .table-stack td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-stretch: 75%;
+    color: var(--ink-soft);
+  }
+}
+
+@media (max-width: 20rem) {
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

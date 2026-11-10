@@ -3,61 +3,95 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Era Suite</title>
-<meta name="description" content="Developer infrastructure that runs on machines you own: EraDB, EraInfra and EraMesh.">
+<title>Era Suite: infrastructure software for machines you own</title>
+<meta name="description" content="EraMesh, EraDB and EraInfra: a private device network, a local-first application database and a self-hosted CI fleet. Each page states what works, what does not, and when another tool fits better.">
 <link rel="canonical" href="https://erasuite.dev/">
 <meta property="og:title" content="Era Suite">
-<meta property="og:description" content="Developer infrastructure that runs on machines you own: EraDB, EraInfra and EraMesh.">
+<meta property="og:description" content="A private device network, a local-first application database and a self-hosted CI fleet, for machines you own.">
 <meta property="og:url" content="https://erasuite.dev/">
 <meta name="theme-color" content="#e9edeb">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
-  <nav class="site-nav" aria-label="Products">
+  <nav class="site-nav" aria-label="Projects">
     <a href="https://mesh.erasuite.dev/">EraMesh</a>
     <a href="https://db.erasuite.dev/">EraDB</a>
     <a href="https://infra.erasuite.dev/">EraInfra</a>
   </nav>
 </header>
-<main id="main" class="home">
-  <div class="home-intro">
+<main id="main">
+  <div class="intro">
     <h1>Era Suite</h1>
-    <p class="lede">Developer infrastructure that runs on machines you own: an application database, a CI fleet, and a private network for your devices.</p>
-    <p class="note">The three projects are at different stages. Each page says what works today, what does not, and how it compares with tools you may already use.</p>
+    <p class="lede">Infrastructure software for machines you own: a private network for your devices, an application database that reads from the device first, and a CI fleet for GitHub Actions.</p>
+    <p class="note">The three projects are at different stages. Each page says what works today, what does not, and when another tool is the better choice.</p>
   </div>
-  <ol class="column" aria-label="Products, newest first">
-    <li>
-      <a class="stratum litho-amethyst" href="https://mesh.erasuite.dev/">
-        <span class="stratum-name">EraMesh</span>
-        <span class="stratum-desc">A private network for your own devices. It picks a direct, relayed or TCP path and sends traffic out through the exit you choose.</span>
-        <span class="stratum-status">In development. Not released.</span>
-      </a>
-    </li>
-    <li>
-      <a class="stratum litho-basalt" href="https://db.erasuite.dev/">
-        <span class="stratum-name">EraDB</span>
-        <span class="stratum-desc">A local-first TypeScript application database. Apps read from local storage while PostgreSQL stays the source of truth.</span>
-        <span class="stratum-status">Release candidate 0.1.0-rc.1. Not on npm yet.</span>
-      </a>
-    </li>
-    <li>
-      <a class="stratum stratum-thick litho-olivine" href="https://infra.erasuite.dev/">
-        <span class="stratum-name">EraInfra</span>
-        <span class="stratum-desc">Self-hosted GitHub Actions runners on your own Linux, Mac and Windows machines. Each job gets a fresh VM, and no machine needs a public IP.</span>
-        <span class="stratum-status">Source on GitHub under the MIT license.</span>
-      </a>
-    </li>
-  </ol>
+
+  <figure class="section" aria-labelledby="section-title">
+    <h2 class="visually-hidden" id="section-title">Projects, newest first</h2>
+    <ol class="beds">
+      <li class="bed">
+        <p class="bed-age"><strong>Nov 2026</strong> first commit</p>
+        <div class="bed-track">
+          <div class="bed-rock litho-amethyst" style="--maturity: 0.4">
+            <h3><a href="https://mesh.erasuite.dev/">EraMesh</a></h3>
+          </div>
+        </div>
+        <div class="bed-text">
+          <p>A private mesh network for your own devices. You set the order of exit devices, relays are always your own machines, and traffic moves to QUIC over TCP when a network blocks UDP.</p>
+          <p class="bed-state">In development. No release, no public source.</p>
+        </div>
+      </li>
+      <li class="bed">
+        <p class="bed-age"><strong>Aug 2026</strong> first commit</p>
+        <div class="bed-track">
+          <div class="bed-rock litho-basalt" style="--maturity: 0.7">
+            <h3><a href="https://db.erasuite.dev/">EraDB</a></h3>
+          </div>
+        </div>
+        <div class="bed-text">
+          <p>A local-first application database for TypeScript. Apps read from storage on the device and show a command's result at once, while PostgreSQL stays the source of truth.</p>
+          <p class="bed-state">Release candidate 0.1.0-rc.1. Not on npm, no public source.</p>
+        </div>
+      </li>
+      <li class="bed">
+        <p class="bed-age"><strong>Jul 2026</strong> first commit</p>
+        <div class="bed-track">
+          <div class="bed-rock litho-olivine" style="--maturity: 1">
+            <h3><a href="https://infra.erasuite.dev/">EraInfra</a></h3>
+          </div>
+        </div>
+        <div class="bed-text">
+          <p>A self-hosted CI fleet for GitHub Actions. Each job runs in a fresh VM on Linux, Mac or Windows machines you own, and no machine needs a public IP.</p>
+          <p class="bed-state">Open source on GitHub under MIT. Releases since v0.1.0; v0.2 is in release candidates.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="axis">
+      <ol class="axis-scale" aria-label="Bed width">
+        <li style="--at: 40%">In development</li>
+        <li style="--at: 70%">Release candidate</li>
+        <li style="--at: 100%">Public releases</li>
+      </ol>
+      <figcaption class="axis-caption">Read it like a rock section: the newest project is on top, and a wider bed is further along toward a stable release.</figcaption>
+    </div>
+  </figure>
+
+  <section class="about" aria-labelledby="about-title">
+    <h2 id="about-title">About these pages</h2>
+    <div>
+      <p>Era Suite is a family of projects by Zhendi Fan. Every claim on these pages comes from the project's own README and test records. Each page names the tools you may already use, says where they are better, and lists the project's limits before you run into them.</p>
+      <p>EraInfra's source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a>. EraDB and EraMesh will link to their source when it is public.</p>
+    </div>
+  </section>
 </main>
 <footer class="site-footer">
-  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+  <p>Era Suite is built by Zhendi Fan.</p>
+  <p>This site sets no cookies and loads nothing from other domains.</p>
 </footer>
 </body>
 </html>

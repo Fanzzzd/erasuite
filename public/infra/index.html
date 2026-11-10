@@ -3,69 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EraInfra: GitHub Actions on your own machines</title>
-<meta name="description" content="Self-hosted GitHub Actions runners with a fresh VM per job and no public IP needed.">
+<title>EraInfra: a self-hosted CI fleet for GitHub Actions</title>
+<meta name="description" content="EraInfra runs GitHub Actions jobs in a fresh VM per job on Linux, Mac and Windows machines you own. No machine needs a public IP. Open source under MIT.">
 <link rel="canonical" href="https://infra.erasuite.dev/">
-<meta property="og:title" content="EraInfra: GitHub Actions on your own machines">
-<meta property="og:description" content="Self-hosted GitHub Actions runners with a fresh VM per job and no public IP needed.">
+<meta property="og:title" content="EraInfra: a self-hosted CI fleet for GitHub Actions">
+<meta property="og:description" content="A fresh VM per job on machines you own, and no machine needs a public IP. Open source under MIT.">
 <meta property="og:url" content="https://infra.erasuite.dev/">
-<meta name="theme-color" content="#e9edeb">
+<meta name="theme-color" content="#4f6a24">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
-  <nav class="site-nav" aria-label="Products">
+  <nav class="site-nav" aria-label="Projects">
     <a href="https://mesh.erasuite.dev/">EraMesh</a>
     <a href="https://db.erasuite.dev/">EraDB</a>
     <a href="https://infra.erasuite.dev/" aria-current="page">EraInfra</a>
   </nav>
 </header>
 <main id="main">
-  <div class="product-band litho-olivine">
+  <div class="band litho-olivine">
     <h1>EraInfra</h1>
-    <p>EraInfra runs GitHub Actions jobs on Linux, Mac and Windows machines you already own. Each job gets a fresh, isolated environment that is destroyed afterwards. Machines connect out to the control plane, so none of them needs a public IP.</p>
+    <p class="oneliner">EraInfra is a self-hosted CI fleet for GitHub Actions. It runs each job in a fresh, isolated environment on Linux, Mac and Windows machines you already own, then destroys it. Machines connect out to the control plane, so none of them needs a public IP.</p>
+    <dl class="facts">
+      <div><dt>Stage</dt><dd>Public, in use on its own fleet</dd></div>
+      <div><dt>Version</dt><dd>v0.2.0-rc.13, after v0.1.5</dd></div>
+      <div><dt>Source</dt><dd><a href="https://github.com/Fanzzzd/erainfra">github.com/Fanzzzd/erainfra</a></dd></div>
+      <div><dt>License</dt><dd>MIT</dd></div>
+    </dl>
   </div>
-  <div class="product-body" style="--tone: var(--olivine)">
-    <div>
+
+  <div class="product" style="--tone: var(--olivine)">
+    <article>
       <section>
         <h2>Who it is for</h2>
-        <p>Teams and individuals with spare hardware, such as a home server, a Mac mini or office machines, who want to run CI on it without giving every job a long-lived host. Workflows change one line: <code>runs-on: rc-linux-js</code>.</p>
+        <p>Teams and individuals with spare hardware, such as a home server, a Mac mini or office machines, who want to run CI on it without giving every job a long-lived host. A workflow changes one line:</p>
+<pre><code>jobs:
+  test:
+    <span class="comment"># was: runs-on: ubuntu-latest</span>
+    runs-on: rc-linux-js</code></pre>
+        <p><code>rc-linux-js</code> is a Profile: a fixed image, CPU and memory size. The workflow never names a machine; EraInfra picks one that is ready for that Profile.</p>
       </section>
-      <section>
-        <h2>How it compares</h2>
-        <ul>
-          <li><strong>GitHub-hosted runners</strong> need nothing to operate. EraInfra can send a run to them when no machine of yours is free.</li>
-          <li><strong>A plain self-hosted runner</strong> reuses the same host between jobs. EraInfra prepares an environment for one job and removes it on every exit path, including Worker crashes.</li>
-          <li><strong>Actions Runner Controller</strong> is the better choice when your whole fleet already runs Kubernetes. EraInfra targets machines without a cluster, including ones behind NAT or a home router.</li>
-        </ul>
-      </section>
+
       <section>
         <h2>What works today</h2>
-        <table class="matrix">
+        <table class="table table-stack">
           <thead><tr><th scope="col">Platform</th><th scope="col">Executor</th><th scope="col">Isolation</th></tr></thead>
           <tbody>
-            <tr><td>Linux x64 and ARM64</td><td>Firecracker</td><td>Own guest kernel per job. Use this for untrusted code. Needs KVM.</td></tr>
-            <tr><td>Linux x64 and ARM64</td><td>Docker</td><td>Shares the host kernel. Only for jobs that trust each other.</td></tr>
-            <tr><td>Apple Silicon macOS</td><td>Tart</td><td>Copy-on-write VM per job, two at a time by default.</td></tr>
-            <tr><td>Windows x64</td><td>Hyper-V</td><td>Ready once the machine proves Hyper-V works.</td></tr>
+            <tr><th scope="row">Linux x64 and ARM64</th><td data-label="Executor">Firecracker</td><td data-label="Isolation">Own guest kernel per job. Use this for untrusted code. Needs KVM.</td></tr>
+            <tr><th scope="row">Linux x64 and ARM64</th><td data-label="Executor">Docker</td><td data-label="Isolation">Shares the host kernel. Only for jobs that trust each other.</td></tr>
+            <tr><th scope="row">Apple Silicon macOS</th><td data-label="Executor">Tart</td><td data-label="Isolation">Copy-on-write VM per job, two at a time by default.</td></tr>
+            <tr><th scope="row">Windows x64</th><td data-label="Executor">Hyper-V</td><td data-label="Isolation">One job at a time. The machine is offered work only after it proves Hyper-V works.</td></tr>
           </tbody>
         </table>
+        <ul>
+          <li>Each job's environment is removed on every exit path, including a Worker crash, and its GitHub credentials are single-use.</li>
+          <li>Each Worker checks its own isolation. A Worker whose live firewall rules drift from the rendered policy stops taking jobs.</li>
+          <li>A Profile can deny all outbound traffic except an allowlist of domains and address ranges, or record what its jobs reach first.</li>
+          <li>An optional router job sends a run to GitHub-hosted runners when no machine of yours is free.</li>
+          <li>A job cache that serves <code>actions/cache</code>, <code>setup-node</code> and <code>setup-go</code> from your own storage on Firecracker Profiles.</li>
+          <li>The same machines can also run long-lived apps. A Hub builds and deploys them on <code>git push</code> and serves each one at its own HTTPS address.</li>
+        </ul>
         <p>The project's own fleet has run its Linux jobs in Firecracker microVMs since 20 August 2026.</p>
       </section>
-      <section class="status">
+
+      <section>
+        <h2>How it compares</h2>
+        <table class="table table-stack">
+          <thead><tr><th scope="col">Instead of EraInfra</th><th scope="col">Choose it when</th><th scope="col">Where EraInfra differs</th></tr></thead>
+          <tbody>
+            <tr>
+              <th scope="row">GitHub-hosted runners</th>
+              <td data-label="Choose it when">You want nothing to operate.</td>
+              <td data-label="EraInfra differs">Runs on hardware you already have, and can send a run to GitHub-hosted runners when your machines are busy.</td>
+            </tr>
+            <tr>
+              <th scope="row">A plain self-hosted runner</th>
+              <td data-label="Choose it when">You have one trusted repository and one machine.</td>
+              <td data-label="EraInfra differs">A plain runner reuses the same host between jobs. EraInfra prepares an environment for one job and removes it afterwards.</td>
+            </tr>
+            <tr>
+              <th scope="row">Actions Runner Controller</th>
+              <td data-label="Choose it when">Your whole fleet already runs Kubernetes. It is the better choice there.</td>
+              <td data-label="EraInfra differs">Targets machines without a cluster, including Macs and machines behind NAT or a home router.</td>
+            </tr>
+            <tr>
+              <th scope="row">Fireactions</th>
+              <td data-label="Choose it when">You only need Firecracker runners on Linux.</td>
+              <td data-label="EraInfra differs">EraInfra uses Fireactions as the reference for its Linux executor, and puts Linux, macOS and Windows machines under one scheduler.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="limits">
         <h2>Limits</h2>
         <ul>
           <li>The control plane, scheduler and dashboard run on Convex, so you need a Convex deployment.</li>
           <li>Firecracker Workers need KVM and dedicated runtime storage.</li>
           <li>macOS Workers run at most two VMs by default, to stay within Apple's virtualization license.</li>
+          <li>Self-hosted runners run repository code with that repository's token and secrets. Keep Profiles private to trusted repositories, and do not run pull requests from untrusted forks on machines that hold persistent credentials.</li>
+          <li>The app Hub is a second control plane, separate from the Convex one, and needs a Cloudflare Tunnel for its HTTPS addresses.</li>
+          <li>Version 0.2 is still in release candidates.</li>
         </ul>
       </section>
+
       <section>
         <h2>Get started</h2>
         <ol>
@@ -75,20 +120,22 @@
         </ol>
         <p><a class="button" href="https://github.com/Fanzzzd/erainfra">Read the setup guide on GitHub</a></p>
       </section>
-    </div>
-  <aside class="mini-column" aria-label="Era Suite products">
-    <h2>Era Suite</h2>
-    <ul>
-      <li><a class="litho-amethyst" href="https://mesh.erasuite.dev/">EraMesh</a></li>
-      <li><a class="litho-basalt" href="https://db.erasuite.dev/">EraDB</a></li>
-      <li><a class="litho-olivine" href="https://infra.erasuite.dev/" aria-current="page">EraInfra</a></li>
-    </ul>
-    <p><a class="home-link" href="https://erasuite.dev/">All products</a></p>
-  </aside>
+    </article>
+
+    <aside class="minisection" aria-labelledby="mini-title">
+      <h2 id="mini-title">Era Suite</h2>
+      <ol>
+        <li><a class="litho-amethyst" style="--maturity: 0.4" href="https://mesh.erasuite.dev/">EraMesh</a></li>
+        <li><a class="litho-basalt" style="--maturity: 0.7" href="https://db.erasuite.dev/">EraDB</a></li>
+        <li><a class="litho-olivine" style="--maturity: 1" href="https://infra.erasuite.dev/" aria-current="page">EraInfra</a></li>
+      </ol>
+      <p>Newest on top. A wider bed is closer to a stable release. <a href="https://erasuite.dev/">All projects</a></p>
+    </aside>
   </div>
 </main>
 <footer class="site-footer">
-  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+  <p>Era Suite is built by Zhendi Fan.</p>
+  <p>This site sets no cookies and loads nothing from other domains.</p>
 </footer>
 </body>
 </html>

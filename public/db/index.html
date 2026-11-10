@@ -3,82 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EraDB: local-first TypeScript database</title>
-<meta name="description" content="A local-first TypeScript application database with PostgreSQL as the authority. Release candidate, not yet published.">
+<title>EraDB: a local-first application database for TypeScript</title>
+<meta name="description" content="EraDB is a local-first application database for TypeScript apps. Reads come from the device, commands show their result at once, and PostgreSQL stays the source of truth. Release candidate, not on npm.">
 <link rel="canonical" href="https://db.erasuite.dev/">
-<meta property="og:title" content="EraDB: local-first TypeScript database">
-<meta property="og:description" content="A local-first TypeScript application database with PostgreSQL as the authority. Release candidate, not yet published.">
+<meta property="og:title" content="EraDB: a local-first application database for TypeScript">
+<meta property="og:description" content="Reads come from the device, commands show their result at once, and PostgreSQL stays the source of truth. Release candidate, not on npm.">
 <meta property="og:url" content="https://db.erasuite.dev/">
-<meta name="theme-color" content="#e9edeb">
+<meta name="theme-color" content="#2e5e7e">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
-  <nav class="site-nav" aria-label="Products">
+  <nav class="site-nav" aria-label="Projects">
     <a href="https://mesh.erasuite.dev/">EraMesh</a>
     <a href="https://db.erasuite.dev/" aria-current="page">EraDB</a>
     <a href="https://infra.erasuite.dev/">EraInfra</a>
   </nav>
 </header>
 <main id="main">
-  <div class="product-band litho-basalt">
+  <div class="band litho-basalt">
     <h1>EraDB</h1>
-    <p>EraDB is a local-first TypeScript application database. Your app reads from durable local storage and shows the predicted result of a command immediately. PostgreSQL stays the authority, and every query result says whether the local data is complete.</p>
+    <p class="oneliner">EraDB is a local-first application database for TypeScript apps. Your app reads from durable storage on the device and shows a command's predicted result at once. PostgreSQL stays the source of truth, and every query result says whether the local data is complete.</p>
+    <dl class="facts">
+      <div><dt>Stage</dt><dd>Release candidate</dd></div>
+      <div><dt>Version</dt><dd>0.1.0-rc.1, not on npm</dd></div>
+      <div><dt>Source</dt><dd>Not public yet</dd></div>
+      <div><dt>License</dt><dd>MIT</dd></div>
+    </dl>
   </div>
-  <div class="product-body" style="--tone: var(--basalt)">
-    <div>
+
+  <div class="product" style="--tone: var(--basalt)">
+    <article>
       <section>
         <h2>Who it is for</h2>
-        <p>App developers who want a typed, realtime backend in the style of Convex, running on their own PostgreSQL instead of a hosted service.</p>
+        <p>App developers who want a typed, realtime backend in the style of Convex, running on their own PostgreSQL instead of a hosted service, with reads that do not wait for the network.</p>
       </section>
+
+      <section>
+        <h2>What works today</h2>
+        <ul>
+          <li>A typed schema with queries, commands, access policies and migrations. Commands are compiled at build time and verified by a separate checker, so the same command runs on the device for the prediction and on the server for the real write.</li>
+          <li>A local client that shows a command's predicted result, then settles it against the server's answer.</li>
+          <li>A durable browser Worker on SQLite that keeps one leader across open tabs.</li>
+          <li>PostgreSQL as the authority, with change data capture and ordered WebSocket sync.</li>
+          <li>Server functions, scheduling, file storage, search and authentication.</li>
+          <li>Bindings for React, Vue, Svelte, Next.js and TanStack Query, and clients for Rust, Python, Kotlin and Swift.</li>
+          <li>A CLI, a dashboard, and a self-host control plane with encrypted secrets, an audit log, and backup and restore.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>How finished it is</h2>
+        <p>EraDB scores itself against a list of 190 Convex capabilities. Each one passes only when a tagged test proves it. At the last recorded run, 189 passed. The one failure is a process check: the published scorecard was too old. Three serious findings from adversarial review are also open, so the verdict is a fail.</p>
+      </section>
+
       <section>
         <h2>How it compares</h2>
-        <ul>
-          <li><strong>Convex</strong> is the model EraDB follows, and it is hosted and in production use today. EraDB scores itself against every Convex capability, and that check currently fails.</li>
-          <li><strong>PostgreSQL with your own API</strong> leaves sync, local caching and optimistic updates to you. EraDB includes them, with ordered WebSocket sync and policy checks on the server.</li>
-        </ul>
+        <table class="table table-stack">
+          <thead><tr><th scope="col">Instead of EraDB</th><th scope="col">Choose it when</th><th scope="col">Where EraDB differs</th></tr></thead>
+          <tbody>
+            <tr>
+              <th scope="row">Convex</th>
+              <td data-label="Choose it when">You want a hosted service that is in production use today. EraDB follows its model, and Convex is the better choice now.</td>
+              <td data-label="EraDB differs">Runs on your own PostgreSQL, reads from storage on the device, and reports on every query whether local data is complete.</td>
+            </tr>
+            <tr>
+              <th scope="row">PostgreSQL with your own API</th>
+              <td data-label="Choose it when">Your app can wait for the network on every read and does not need live updates.</td>
+              <td data-label="EraDB differs">Sync, local caching, predicted results and policy checks on the server are included, so you do not build them yourself.</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
-      <section>
-        <h2>What it includes</h2>
-        <ul>
-          <li>A typed schema, query and command core with a build-time command compiler.</li>
-          <li>A durable browser Worker and local client, with React and other framework bindings and native clients.</li>
-          <li>PostgreSQL execution, server functions, scheduling, file storage, search and auth.</li>
-          <li>A CLI, a dashboard and a self-host control plane.</li>
-        </ul>
-      </section>
-      <section class="status">
+
+      <section class="limits">
         <h2>Limits</h2>
         <ul>
-          <li>Release candidate 0.1.0-rc.1. Its 22 packages build as local tarballs and none is published to npm.</li>
-          <li>Self-hosting works with a locally built control-plane image and PostgreSQL. There is no hosted service.</li>
+          <li>None of the 22 packages is on npm. You build signed tarballs from a checkout and install them by hand.</li>
           <li>The source is not public yet.</li>
+          <li>There is no hosted service. Self-hosting needs a control-plane image you build yourself and a PostgreSQL database.</li>
+          <li>Writes have hard limits. For example, one command writes at most 8,192 rows, and function arguments are capped at 8 MiB.</li>
         </ul>
       </section>
+
       <section>
         <h2>Get it</h2>
         <p>EraDB is not available for download yet. This page will link to the source and packages when they are published.</p>
       </section>
-    </div>
-  <aside class="mini-column" aria-label="Era Suite products">
-    <h2>Era Suite</h2>
-    <ul>
-      <li><a class="litho-amethyst" href="https://mesh.erasuite.dev/">EraMesh</a></li>
-      <li><a class="litho-basalt" href="https://db.erasuite.dev/" aria-current="page">EraDB</a></li>
-      <li><a class="litho-olivine" href="https://infra.erasuite.dev/">EraInfra</a></li>
-    </ul>
-    <p><a class="home-link" href="https://erasuite.dev/">All products</a></p>
-  </aside>
+    </article>
+
+    <aside class="minisection" aria-labelledby="mini-title">
+      <h2 id="mini-title">Era Suite</h2>
+      <ol>
+        <li><a class="litho-amethyst" style="--maturity: 0.4" href="https://mesh.erasuite.dev/">EraMesh</a></li>
+        <li><a class="litho-basalt" style="--maturity: 0.7" href="https://db.erasuite.dev/" aria-current="page">EraDB</a></li>
+        <li><a class="litho-olivine" style="--maturity: 1" href="https://infra.erasuite.dev/">EraInfra</a></li>
+      </ol>
+      <p>Newest on top. A wider bed is closer to a stable release. <a href="https://erasuite.dev/">All projects</a></p>
+    </aside>
   </div>
 </main>
 <footer class="site-footer">
-  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+  <p>Era Suite is built by Zhendi Fan.</p>
+  <p>This site sets no cookies and loads nothing from other domains.</p>
 </footer>
 </body>
 </html>

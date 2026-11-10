@@ -3,81 +3,123 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EraMesh: a private network for your devices</title>
-<meta name="description" content="A private network for your own devices with direct, relayed and TCP paths. In development, not released.">
+<title>EraMesh: a private mesh network for your own devices</title>
+<meta name="description" content="EraMesh is a private mesh network for your own devices, with ordered exit devices, relays only through your own machines, and QUIC over TCP when UDP is blocked. In development, not released.">
 <link rel="canonical" href="https://mesh.erasuite.dev/">
-<meta property="og:title" content="EraMesh: a private network for your devices">
-<meta property="og:description" content="A private network for your own devices with direct, relayed and TCP paths. In development, not released.">
+<meta property="og:title" content="EraMesh: a private mesh network for your own devices">
+<meta property="og:description" content="Ordered exit devices, relays only through your own machines, and QUIC over TCP when UDP is blocked. In development, not released.">
 <meta property="og:url" content="https://mesh.erasuite.dev/">
-<meta name="theme-color" content="#e9edeb">
+<meta name="theme-color" content="#6b4f86">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="https://erasuite.dev/">Era Suite</a>
-  <nav class="site-nav" aria-label="Products">
+  <nav class="site-nav" aria-label="Projects">
     <a href="https://mesh.erasuite.dev/" aria-current="page">EraMesh</a>
     <a href="https://db.erasuite.dev/">EraDB</a>
     <a href="https://infra.erasuite.dev/">EraInfra</a>
   </nav>
 </header>
 <main id="main">
-  <div class="product-band litho-amethyst">
+  <div class="band litho-amethyst">
     <h1>EraMesh</h1>
-    <p>EraMesh connects your own computers, phones and servers into one private network. It uses a direct path when it can, relays through another of your devices when it cannot, and carries traffic over TCP when UDP is blocked.</p>
+    <p class="oneliner">EraMesh is a private mesh network for your own computers, phones and servers. You choose the order of exit devices, relays are always your own machines, and traffic moves to QUIC over TCP when a network blocks UDP.</p>
+    <dl class="facts">
+      <div><dt>Stage</dt><dd>In development</dd></div>
+      <div><dt>Release</dt><dd>None yet</dd></div>
+      <div><dt>Source</dt><dd>Not public yet</dd></div>
+      <div><dt>License</dt><dd>Not chosen yet</dd></div>
+    </dl>
   </div>
-  <div class="product-body" style="--tone: var(--amethyst)">
-    <div>
+
+  <div class="product" style="--tone: var(--amethyst)">
+    <article>
       <section>
         <h2>Who it is for</h2>
-        <p>People who run their own servers and want every device reachable from anywhere, with control over which machine their traffic leaves through and in what order to try them.</p>
+        <p>People who run their own servers and want every device reachable from anywhere, with control over which machine their traffic leaves through and what happens when that machine goes down.</p>
       </section>
-      <section>
-        <h2>How it compares</h2>
-        <ul>
-          <li><strong>Tailscale</strong> is mature, runs on every major platform and is the better choice today. EraMesh differs in ordered exit priorities, relaying only through your own devices, and QUIC carried over TCP when a network blocks UDP.</li>
-        </ul>
-      </section>
+
       <section>
         <h2>What works today</h2>
         <ul>
-          <li>A Rust core and the <code>fp</code> command-line tool.</li>
-          <li>SOCKS and HTTP proxy, application UDP, tunneled DNS and static port forwards.</li>
+          <li>A Rust core and the <code>fp</code> command-line tool: SOCKS and HTTP proxy, application UDP, a tunneled DNS stub and static port forwards.</li>
+          <li>Devices join by invite, and members can take the exit or relay role.</li>
+          <li>An ordered list of exits. When an exit fails, traffic moves to the next one on the list, and an empty list blocks traffic instead of sending it out directly.</li>
+          <li>Member connections use TLS 1.3 with the hybrid post-quantum key exchange X25519MLKEM768 only. A peer that cannot use it fails the handshake.</li>
           <li>A full-device tunnel on Linux.</li>
-          <li>Desktop, Android, iPhone and Apple TV apps that share the same core.</li>
+          <li>Desktop, Android, iPhone and Apple TV apps that share one Rust core instead of reimplementing it.</li>
         </ul>
       </section>
-      <section class="status">
+
+      <section>
+        <h2>Platform evidence</h2>
+        <p>A platform counts as supported only after its app completes the shared acceptance flows on a recorded OS version. None has yet.</p>
+        <table class="table table-stack">
+          <thead><tr><th scope="col">Platform</th><th scope="col">What has been shown</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Linux</th><td data-label="Shown">Every desktop flow driven through the app in a lab VM on arm64, including the full-device tunnel and its cleanup.</td></tr>
+            <tr><th scope="row">Android</th><td data-label="Shown">All 5 acceptance flows on the arm64 emulator, including packet transfer and a network change. No physical device yet.</td></tr>
+            <tr><th scope="row">macOS</th><td data-label="Shown">Six app flows completed by hand on arm64. The full-device tunnel is not yet allowed to run.</td></tr>
+            <tr><th scope="row">iPhone and Apple TV</th><td data-label="Shown">Simulator tests pass. No device evidence yet.</td></tr>
+            <tr><th scope="row">Windows</th><td data-label="Shown">The app and tools build. Nothing has run on Windows yet.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>How it compares</h2>
+        <table class="table table-stack">
+          <thead><tr><th scope="col">Instead of EraMesh</th><th scope="col">Choose it when</th><th scope="col">Where EraMesh differs</th></tr></thead>
+          <tbody>
+            <tr>
+              <th scope="row">Tailscale</th>
+              <td data-label="Choose it when">You want a private network that works today on every major platform. It is mature, and it is the better choice now.</td>
+              <td data-label="EraMesh differs">An ordered list of exits that fails closed, relays only through your own members, and QUIC carried over TCP when UDP is blocked.</td>
+            </tr>
+            <tr>
+              <th scope="row">Hysteria 2</th>
+              <td data-label="Choose it when">You need one fast proxy from one client to one server.</td>
+              <td data-label="EraMesh differs">A network of member devices with invites, relays and exit failover. The project's lab runs both under the same network conditions, and that comparison is not finished.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="limits">
         <h2>Limits</h2>
         <ul>
+          <li>No platform has passed full acceptance testing. The Windows build has never run on Windows.</li>
           <li>The full-device tunnel stays off on macOS and Windows until leak prevention is in place.</li>
-          <li>The apps have run in emulators and simulators. No platform has passed full acceptance testing.</li>
-          <li>There is no release, and the source is not public yet.</li>
+          <li>When an exit fails, open TCP connections that went through it can reset. New connections use the next exit.</li>
+          <li>There is no release, no public source and no license yet.</li>
+          <li>The project was called FastPipe. The <code>fp</code> tool, package names and settings paths still use that name.</li>
         </ul>
       </section>
+
       <section>
         <h2>Get it</h2>
         <p>EraMesh is not available yet. This page will link to the source and downloads when the first release is ready.</p>
       </section>
-    </div>
-  <aside class="mini-column" aria-label="Era Suite products">
-    <h2>Era Suite</h2>
-    <ul>
-      <li><a class="litho-amethyst" href="https://mesh.erasuite.dev/" aria-current="page">EraMesh</a></li>
-      <li><a class="litho-basalt" href="https://db.erasuite.dev/">EraDB</a></li>
-      <li><a class="litho-olivine" href="https://infra.erasuite.dev/">EraInfra</a></li>
-    </ul>
-    <p><a class="home-link" href="https://erasuite.dev/">All products</a></p>
-  </aside>
+    </article>
+
+    <aside class="minisection" aria-labelledby="mini-title">
+      <h2 id="mini-title">Era Suite</h2>
+      <ol>
+        <li><a class="litho-amethyst" style="--maturity: 0.4" href="https://mesh.erasuite.dev/" aria-current="page">EraMesh</a></li>
+        <li><a class="litho-basalt" style="--maturity: 0.7" href="https://db.erasuite.dev/">EraDB</a></li>
+        <li><a class="litho-olivine" style="--maturity: 1" href="https://infra.erasuite.dev/">EraInfra</a></li>
+      </ol>
+      <p>Newest on top. A wider bed is closer to a stable release. <a href="https://erasuite.dev/">All projects</a></p>
+    </aside>
   </div>
 </main>
 <footer class="site-footer">
-  <p>Era Suite is built by Zhendi Fan. EraInfra source is on <a href="https://github.com/Fanzzzd/erainfra">GitHub</a> under the MIT license.</p>
+  <p>Era Suite is built by Zhendi Fan.</p>
+  <p>This site sets no cookies and loads nothing from other domains.</p>
 </footer>
 </body>
 </html>
