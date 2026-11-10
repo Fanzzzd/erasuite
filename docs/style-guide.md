@@ -56,7 +56,9 @@ Does not:
 - The site has no formatter or linter for `src/worker.js` or `test/worker.test.mjs`.
 
 Smallest change: add the missing config file per language (snippets below) and one
-CI step per tool. For EraInfra Go this is three lines in `.golangci.yml`:
+CI step per tool. Where code was never formatted, the first run is not small: EraMesh's
+`cargo fmt --all` rewrites 97 of 118 Rust files. Land that commit alone, at a quiet
+point, because it conflicts with every branch in progress. For EraInfra Go this is three lines in `.golangci.yml`:
 
 ```yaml
 formatters:
@@ -179,10 +181,15 @@ Does not:
   `packages/server/src/pg/cdc-source.ts`), which suggests trimming to fit rather than
   splitting.
 - EraMesh: `mesh/src/node.rs` has 2500 lines; `mesh/src/tun/mod.rs` 1411,
-  `mesh/src/paths.rs` 1380, `mesh/src/tun/plan/mod.rs` 1095, `mesh/src/proxy.rs` 1035.
+  `mesh/src/paths.rs` 1380, `mesh/src/tun/plan/mod.rs` 1095, `mesh/src/proxy.rs` 1035,
+  and the Python lab runner `bench/lab/run.py` 1552.
 - EraInfra: `apps/runtime/internal/firecracker/runtime_linux.go` 1271,
   `apps/runtime/internal/gitmirror/gitmirror.go` 1034,
   `apps/erainfra-cli/internal/cli/infra.go` 1004.
+
+EraDB's script counts `split("\n").length`, so a file that ends in a newline counts
+one line more than `wc -l` shows. The effective cap is 899 lines by `wc -l`; keep the
+same counting in every repository so the numbers agree.
 
 Smallest change: copy EraDB's `check-structure.mjs` logic into a 20-line script in
 each repository, wire it into CI with today's oversized files listed as exceptions,
@@ -234,7 +241,10 @@ Does not:
 - EraMesh: 14 of its last 200 subjects use the form; 80 use a bare `area:` prefix and
   the rest none, for example "Keep established flows only on a selected or listed
   healthy exit (R14 L1)". 78 of 200 exceed 72 characters.
-- EraInfra subjects average 77 characters, with a maximum of 126.
+- EraInfra subjects average 77 characters, with a maximum of 126; 90 of the last 200
+  exceed 72 even before GitHub's "(#N)" suffix. It also uses non-standard types once
+  each (`image:`, `dashboard:`, `bench:`, `conformance:`, `style:`); these become scopes,
+  as in `feat(image):`.
 - The site: "Deploy from GitHub Actions after routing tests".
 
 Smallest change: copy EraDB's commit section into each repository's `CONTRIBUTING.md`.
@@ -307,6 +317,11 @@ Rule: a lint suppression names the exact rule and says why on the same line. Rus
 it. Go uses `//nolint:rule // reason`. TypeScript uses
 `// oxlint-disable-next-line rule -- reason`. Dead code is deleted, not ignored.
 
+Exception: a lint that fires only on some targets or in some test binaries (for
+example `unnecessary_cast` only on Unix, `dead_code` only in a test binary that leaves
+a shared helper unused) makes `#[expect]` fail elsewhere. Use
+`#[allow(lint, reason = "...")]` there.
+
 Why: an unexplained suppression outlives its cause and hides real findings.
 
 Follows: EraInfra enforces it with `nolintlint` (`require-explanation`,
@@ -320,25 +335,29 @@ no enforced reason.
 Smallest change: Rust: set `clippy::allow_attributes_without_reason = "warn"` in
 `[workspace.lints]`. TypeScript: review the 13 EraDB comments once.
 
-### 11. Pin the toolchain, and use the same pins across repositories
+### 11. Pin the toolchain and the CI actions, with the same pins across repositories
 
 Rule: each repository pins its tools in files the tools read: `packageManager` in
 `package.json`, `rust-toolchain.toml` per Rust workspace, the `go` line in `go.mod`, a
 Node version file. The pnpm and Turborepo versions are the same in all repositories
-and move together.
+and move together. GitHub Actions are pinned by full commit SHA, with the version in a
+comment.
 
 Why: a check that depends on whatever version is installed cannot be reproduced.
 
 Follows: EraInfra pins Rust in `apps/mesh/rust-toolchain.toml` and golangci-lint in CI
-(`.golangci.yml:1`). Each repository pins `packageManager`.
+(`.golangci.yml:1`), and pins actions by SHA (`.github/workflows/ci.yml`), as the site
+does (`.github/workflows/deploy.yml:20-21`). Each repository pins `packageManager`.
 
 Does not: the pnpm pins differ: EraDB `pnpm@11.17.0` (`package.json:56`), EraInfra
 `pnpm@11.21.0` (`package.json:33`), EraMesh `pnpm@12.16.1` (`package.json:5`). EraMesh
 and EraDB have no `rust-toolchain.toml`; EraMesh only sets `rust-version = "1.91"`
-(`Cargo.toml:14`).
+(`Cargo.toml:14`). EraDB refers to actions by tag, for example `actions/checkout@v4`
+(`.github/workflows/release-candidate.yml:30-34`).
 
 Smallest change: pick one pnpm version, update the three `packageManager` fields in
-one sitting, and add `rust-toolchain.toml` to EraMesh and EraDB `clients/rust`.
+one sitting, add `rust-toolchain.toml` to EraMesh, and replace EraDB's action tags with SHAs
+(Dependabot or Renovate keeps them current).
 
 ### 12. Panics are not error handling
 
@@ -378,8 +397,6 @@ Keep these. They need no change.
   EraInfra `turbo.json`, EraMesh `turbo.json:22-64`).
 - A domain glossary in `CONTEXT.md` that lists words to avoid (EraDB `CONTEXT.md:25`,
   EraInfra `CONTEXT.md:3-4,113-124`).
-- GitHub Actions pinned by commit SHA with the version in a comment (site
-  `.github/workflows/deploy.yml:20-21`, EraInfra `.github/workflows/ci.yml`).
 - Config files carry comments that explain why a setting exists (EraInfra
   `.golangci.yml:1-16`, `turbo.json:4-8`; EraMesh `Cargo.toml:1-5`).
 - Imperative English commit subjects with no Chinese in any of the four histories.
@@ -389,8 +406,10 @@ Keep these. They need no change.
 ### TypeScript and JavaScript
 
 - Format with Oxfmt using EraDB's settings as the shared base (`.oxfmtrc.json:3-15`:
-  width 100, double quotes, trailing commas, sorted imports). EraInfra's
-  `.oxfmtrc.json` sets only ignores; copy the settings in.
+  width 100, double quotes, trailing commas, sorted imports). Oxfmt 0.75 already
+  defaults to everything except `sortImports`, so stating the settings changes no
+  file. Turning on `sortImports` in EraInfra reorders imports in 290 of 385 files;
+  land it as its own commit.
 - Lint with Oxlint, `correctness` and `suspicious` as errors, warnings denied, plus the
   type-aware pass for floating and misused promises (EraDB `.oxlintrc.json:15-21`,
   `.oxlintrc.type-aware.json:29-33`).
@@ -406,7 +425,12 @@ Keep these. They need no change.
 ### Rust
 
 - `rust-toolchain.toml` in each workspace, `[workspace.lints]` in the root
-  `Cargo.toml`, an empty `rustfmt.toml` so editors agree.
+  `Cargo.toml`, and a `rustfmt.toml` that names the edition so editors agree. Pin a
+  toolchain only when it has the targets the repository builds (iOS, Android); if the
+  local toolchain is the floating `stable`, pin the version in CI instead.
+- Turborepo hashes only declared inputs. List `rustfmt.toml`, `clippy.toml` and
+  `rust-toolchain.toml` in `turbo.json` `globalDependencies`, or a cached lint result
+  survives a config change.
 - CI: `cargo fmt --check`, `cargo clippy --locked --all-targets -- -D warnings`,
   `cargo test --locked`, `cargo deny --locked check`. EraInfra `apps/mesh` already runs
   all four (`.github/workflows/ci.yml:277-283`).
@@ -455,7 +479,9 @@ Keep these. They need no change.
 ### Swift
 
 - `swift format` (it ships with the Swift 6 toolchain, so nothing to install), run in
-  CI with a committed `.swift-format`.
+  CI with a committed `.swift-format`. Indent with 2 spaces, the tool's default and
+  what EraDB's Swift client uses; EraDB's `Sources` pass `swift-format lint --strict`
+  with no findings.
 - Strict concurrency on (EraDB `Package.swift:21`). One `Package.swift` per package:
   EraDB keeps two in step by hand (`Package.swift:7-8`); generate or remove one.
 
@@ -491,7 +517,7 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
 
-[*.{rs,py,kt,kts,swift}]
+[*.{rs,py,kt,kts}]
 indent_size = 4
 
 [{*.go,Makefile}]
@@ -511,8 +537,9 @@ Ordered by value per unit of effort. The first items take minutes.
    (rule 4). It has no CI today.
 2. Add `cargo fmt --check` to `core_commands()` in `tools/validate.py` and commit an
    empty `rustfmt.toml` (rule 1).
-3. Add `rust-toolchain.toml` and align `packageManager` with the other repositories
-   (rule 11).
+3. Align `packageManager` with the other repositories. Add `rust-toolchain.toml`
+   only after installing the iOS and Android targets on the pinned version; until
+   then CI pins 1.93.0 (rule 11).
 4. Add `clippy.toml` with `allow-unwrap-in-tests = true` and a non-blocking
    `unwrap_used` report; deny the lint per crate once its count is zero (rule 12).
 5. Add `.editorconfig`, `AGENTS.md`, `CONTRIBUTING.md` with the commit rules, and
@@ -539,6 +566,7 @@ Ordered by value per unit of effort. The first items take minutes.
    Rust client (rule 2).
 8. Generate the root `Package.swift` from `clients/swift/Package.swift`, or drop one
    (Swift rules).
+9. Pin GitHub Actions by commit SHA instead of tags (rule 11).
 
 ### EraInfra
 
