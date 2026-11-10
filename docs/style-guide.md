@@ -133,15 +133,29 @@ Does not:
   (`README.md:5`), and its naming proposal says no final name is chosen
   (`docs/era-family-migration.md:3-5`).
 
-Decision: rename now, before the first publish, in both repositories.
+Decision: rename now, before the first publish, in both repositories. EraMesh is the
+final name, chosen on 2026-11-10. In camelCase identifiers the name is `eraDB` and
+`eraMesh`.
 
 Smallest change:
 - EraDB: one commit renames `EraDb` to `EraDB` in TypeScript, Python and Kotlin type
-  names before `0.1.0` reaches npm. The API reports show the full list.
-- EraMesh: settle the name first. Then rename crates, the npm scope, bundle IDs and
-  the `FP_*` variables in one commit. List the identifiers the owner's live exit
-  already holds (state paths, the `fastpipe-mesh.service` unit named in `README.md`)
-  as frozen in a new `CONTEXT.md`.
+  names before `0.1.0` reaches npm. The API reports show the full list. Package names
+  (`eradb`, `@eradb/*`) already follow the rule.
+- EraMesh: one commit renames what no running system holds:
+
+  | Old | New |
+  |---|---|
+  | crates `fpmesh`, `fpmesh-ffi`, `fastpipe-desktop` | `eramesh`, `eramesh-ffi`, `eramesh-desktop` |
+  | npm `fastpipe`, `@fastpipe/*` | `eramesh`, `@eramesh/*` |
+  | Tauri `productName` and `identifier` | `EraMesh`, `dev.erasuite.eramesh` |
+  | Android `dev.fastpipe.mesh` | `dev.erasuite.eramesh` |
+  | Apple bundle IDs, Swift package `FastPipeKit` | `dev.erasuite.eramesh`, `EraMeshKit` |
+  | UniFFI module `FpmeshFFI` | `EraMeshFFI` |
+
+  The owner's live exit already holds the `fp` CLI name, the `FP_*` environment
+  variables, state paths, protocol identifiers, the `fastpipe-mesh.service` unit and
+  the `sh.local.fastpipe-mesh` launchd label. These stay, listed as frozen in
+  `CONTEXT.md` with the reason for each.
 
 ### 4. Every repository has CI that runs the local gate
 
@@ -185,7 +199,11 @@ Does not:
   and the Python lab runner `bench/lab/run.py` 1552.
 - EraInfra: `apps/runtime/internal/firecracker/runtime_linux.go` 1271,
   `apps/runtime/internal/gitmirror/gitmirror.go` 1034,
-  `apps/erainfra-cli/internal/cli/infra.go` 1004.
+  `apps/erainfra-cli/internal/cli/infra.go` 1004. The first review counted only Go.
+  Counting every language, as the CI check now does, finds 12 more TypeScript,
+  JavaScript and Rust files over the cap, among them `packages/cli/portless.mjs` and
+  the mesh `daemon.rs`. EraInfra's `scripts/check-structure.mjs` lists each one with a
+  reason and fails when a listed file drops under the cap, so the list only shrinks.
 
 EraDB's script counts `split("\n").length`, so a file that ends in a newline counts
 one line more than `wc -l` shows. The effective cap is 899 lines by `wc -l`; keep the
@@ -350,13 +368,31 @@ Follows: EraInfra pins Rust in `apps/mesh/rust-toolchain.toml` and golangci-lint
 does (`.github/workflows/deploy.yml:20-21`). Each repository pins `packageManager`.
 
 Does not: the pnpm pins differ: EraDB `pnpm@11.17.0` (`package.json:56`), EraInfra
-`pnpm@11.21.0` (`package.json:33`), EraMesh `pnpm@12.16.1` (`package.json:5`). EraMesh
-and EraDB have no `rust-toolchain.toml`; EraMesh only sets `rust-version = "1.91"`
-(`Cargo.toml:14`). EraDB refers to actions by tag, for example `actions/checkout@v4`
+`pnpm@11.21.0` (`package.json:33`), EraMesh `pnpm@12.16.1` (`package.json:5`). EraDB
+uses Turborepo 2.10.8, the others 2.11.10. EraMesh and EraDB have no
+`rust-toolchain.toml`; EraMesh only sets `rust-version = "1.91"` (`Cargo.toml:14`).
+No repository has a Node version file; EraDB names Node 22.21.1 in its docs. EraDB
+refers to actions by tag, for example `actions/checkout@v4`
 (`.github/workflows/release-candidate.yml:30-34`).
 
-Smallest change: pick one pnpm version, update the three `packageManager` fields in
-one sitting, add `rust-toolchain.toml` to EraMesh, and replace EraDB's action tags with SHAs
+Decision: these pins, set on 2026-11-10, move together in all repositories.
+
+| Tool | Pin | Where |
+|---|---|---|
+| pnpm | 12.18.0, the npm `latest` tag on 2026-11-10 | `packageManager` in the root `package.json` |
+| Turborepo | 2.11.10 | root `devDependencies` |
+| Node | 22.23.4 to run, `>=22.13.0` to install | `.node-version`, `engines.node` |
+| Rust | 1.98.1, with every target the repository builds | `rust-toolchain.toml` |
+| `actions/checkout` | `3d3c42e5aac5ba805825da76410c181273ba90b1` (v7.0.1) | workflows |
+| `actions/setup-node` | `949feb2413d6458794dcd2491c4babbbce0c15c1` (v7.1.0), with `node-version-file: .node-version` | workflows |
+
+pnpm 12 keeps `lockfileVersion: '9.0'`. In EraInfra the move added one leading YAML
+document about pnpm itself to `pnpm-lock.yaml`, and the dependency part stayed
+byte-identical. Go keeps the `go` line in each `go.mod`.
+
+Smallest change: update the three `packageManager` fields and EraDB's Turborepo in one
+sitting with `pnpm install --lockfile-only`, add `.node-version` and
+`rust-toolchain.toml` where missing, and replace EraDB's action tags with SHAs
 (Dependabot or Renovate keeps them current).
 
 ### 12. Panics are not error handling
@@ -425,9 +461,10 @@ Keep these. They need no change.
 ### Rust
 
 - `rust-toolchain.toml` in each workspace, `[workspace.lints]` in the root
-  `Cargo.toml`, and a `rustfmt.toml` that names the edition so editors agree. Pin a
-  toolchain only when it has the targets the repository builds (iOS, Android); if the
-  local toolchain is the floating `stable`, pin the version in CI instead.
+  `Cargo.toml`, and a `rustfmt.toml` that names the edition so editors agree. List
+  every cross target the repository builds (iOS, Android, Windows) under `targets` in
+  `rust-toolchain.toml`, so rustup installs them with the toolchain. CI reads the same
+  file instead of naming a version.
 - Turborepo hashes only declared inputs. List `rustfmt.toml`, `clippy.toml` and
   `rust-toolchain.toml` in `turbo.json` `globalDependencies`, or a cached lint result
   survives a config change.
@@ -537,17 +574,17 @@ Ordered by value per unit of effort. The first items take minutes.
    (rule 4). It has no CI today.
 2. Add `cargo fmt --check` to `core_commands()` in `tools/validate.py` and commit an
    empty `rustfmt.toml` (rule 1).
-3. Align `packageManager` with the other repositories. Add `rust-toolchain.toml`
-   only after installing the iOS and Android targets on the pinned version; until
-   then CI pins 1.93.0 (rule 11).
+3. Move to pnpm 12.18.0, add `.node-version` and a `rust-toolchain.toml` for 1.98.1
+   that lists the iOS, Android and Windows targets, and point CI at it (rule 11).
 4. Add `clippy.toml` with `allow-unwrap-in-tests = true` and a non-blocking
    `unwrap_used` report; deny the lint per crate once its count is zero (rule 12).
 5. Add `.editorconfig`, `AGENTS.md`, `CONTRIBUTING.md` with the commit rules, and
    rename `PROJECT.md` to `ROADMAP.md` (rules 7 and 8).
-6. Choose a license and add `LICENSE` before any source is public (rule 8).
+6. Add `LICENSE` with the MIT text EraInfra uses, and `license = "MIT"` in the
+   manifests (rule 8).
 7. Move status wording into `mesh/src/app/view.rs` (rule 2).
-8. Settle the product name, rename crates, scope and bundle IDs in one commit, and
-   list frozen identifiers in a new `CONTEXT.md` (rule 3).
+8. Rename crates, scope and bundle IDs to EraMesh in one commit, and list frozen
+   identifiers in a new `CONTEXT.md` (rule 3).
 9. Split `mesh/src/node.rs` along its seams (rule 5).
 
 ### EraDB
@@ -566,7 +603,8 @@ Ordered by value per unit of effort. The first items take minutes.
    Rust client (rule 2).
 8. Generate the root `Package.swift` from `clients/swift/Package.swift`, or drop one
    (Swift rules).
-9. Pin GitHub Actions by commit SHA instead of tags (rule 11).
+9. Pin GitHub Actions by commit SHA instead of tags, move to pnpm 12.18.0 and
+   Turborepo 2.11.10, and add `.node-version` (rule 11).
 
 ### EraInfra
 
@@ -581,6 +619,7 @@ Ordered by value per unit of effort. The first items take minutes.
    "Why it holds up" heading as plain text, and add the U+2014 check (rule 9).
 7. Move the logrus and stdlib `log` call sites to `log/slog` (Go rules).
 8. Split `runtime_linux.go`, `gitmirror.go` and `cli/infra.go` (rule 5).
+9. Move to pnpm 12.18.0 and add `.node-version` (rule 11).
 
 ### Site
 
