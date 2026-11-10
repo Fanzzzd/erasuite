@@ -359,10 +359,12 @@ Does not: EraMesh has about 189 `unwrap()` and 22 `expect()` calls outside tests
 of the `unwrap()` calls are on lock results, and `mesh/src/node.rs` alone has about
 100.
 
-Smallest change: in EraMesh `Cargo.toml` add `[workspace.lints.clippy]`
-`unwrap_used = "warn"` and a `clippy.toml` with `allow-unwrap-in-tests = true`. Replace
-lock unwraps with `expect("<name> lock poisoned")` or `parking_lot` locks, then raise
-the lint to `deny`.
+Smallest change: EraMesh's gate runs Clippy with `-D warnings`, so a `warn` lint
+would fail it at once. Commit a `clippy.toml` with `allow-unwrap-in-tests = true`, and
+track the count with a report that does not block
+(`cargo clippy --workspace -- -A clippy::all -W clippy::unwrap_used`). Replace lock
+unwraps with `expect("<name> lock poisoned")` or `parking_lot` locks. When a crate
+reaches zero, set `unwrap_used = "deny"` in its `[lints.clippy]`.
 
 ## Where the repositories already agree
 
@@ -408,9 +410,10 @@ Keep these. They need no change.
 - CI: `cargo fmt --check`, `cargo clippy --locked --all-targets -- -D warnings`,
   `cargo test --locked`, `cargo deny --locked check`. EraInfra `apps/mesh` already runs
   all four (`.github/workflows/ci.yml:277-283`).
-- Lints in `[workspace.lints]`: `clippy.unwrap_used = "warn"`,
-  `clippy.allow_attributes_without_reason = "warn"`, `rust.missing_docs = "warn"` for
-  library crates. EraMesh documents about 59% of public items, EraDB's Rust client
+- Lints in `[workspace.lints]`: `clippy.allow_attributes_without_reason`,
+  `rust.missing_docs` for library crates, and `clippy.unwrap_used` (rule 12). With
+  Clippy run as `-D warnings`, a lint added at `warn` blocks the gate, so add each one
+  only when the code already passes it. EraMesh documents about 59% of public items, EraDB's Rust client
   646 `///` lines for 82 public items.
 - Errors: rule 12.
 - Unit tests in a sibling `tests` module (`mod tests;`), integration tests in
@@ -510,8 +513,8 @@ Ordered by value per unit of effort. The first items take minutes.
    empty `rustfmt.toml` (rule 1).
 3. Add `rust-toolchain.toml` and align `packageManager` with the other repositories
    (rule 11).
-4. Add `[workspace.lints.clippy] unwrap_used = "warn"` and `clippy.toml` with
-   `allow-unwrap-in-tests = true` (rule 12).
+4. Add `clippy.toml` with `allow-unwrap-in-tests = true` and a non-blocking
+   `unwrap_used` report; deny the lint per crate once its count is zero (rule 12).
 5. Add `.editorconfig`, `AGENTS.md`, `CONTRIBUTING.md` with the commit rules, and
    rename `PROJECT.md` to `ROADMAP.md` (rules 7 and 8).
 6. Choose a license and add `LICENSE` before any source is public (rule 8).
