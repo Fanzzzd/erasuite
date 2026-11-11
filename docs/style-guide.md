@@ -608,6 +608,15 @@ trim_trailing_whitespace = false
 
 Ordered by value per unit of effort. The first items take minutes.
 
+Status on 2026-11-11:
+
+| Repository | State |
+|---|---|
+| EraDB | Every item is on `convex-maturity` except shared client conformance fixtures with their ADR (item 7) and the move to Changesets (item 10). |
+| EraInfra | Every item is on `main`: Fanzzzd/erainfra#291, #294, #296, #297, #298 and #299, plus the README rewrite in #300 and #301. |
+| EraMesh | Items 1 to 6 and the code-level rename are on `feat/quic-connection-resilience`. The runtime rename waits on branch `era/rename-runtime` for one planned production migration with `scripts/migrate-from-fastpipe.sh`. Items 7 and 9 (status wording in one place, splitting `mesh/src/node.rs`) are open. |
+| Site | Done. |
+
 ### EraMesh
 
 1. Add `.github/workflows/ci.yml` running `python3 -I tools/validate.py --suite core`
