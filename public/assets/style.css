@@ -538,6 +538,13 @@ code {
   color: var(--ink-soft);
 }
 
+@media (max-width: 30rem) {
+  .product pre {
+    padding: 0.875rem 0.75rem;
+    font-size: 0.75em;
+  }
+}
+
 /* Tables: evidence, executors and comparisons */
 
 .table {

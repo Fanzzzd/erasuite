@@ -29,7 +29,7 @@
     <h1>EraInfra</h1>
     <p class="oneliner">EraInfra is a self-hosted CI fleet for GitHub Actions. It runs each job in a fresh, isolated environment on Linux, Mac and Windows machines you already own, then destroys it. Machines connect out to the control plane, so none of them needs a public IP.</p>
     <dl class="facts">
-      <div><dt>Stage</dt><dd>Public, in use on its own fleet</dd></div>
+      <div><dt>Stage</dt><dd>Pre-release, in use on its own fleet</dd></div>
       <div><dt>Version</dt><dd><a href="https://github.com/Fanzzzd/erainfra/releases">0.2 release candidates</a>, after v0.1.5</dd></div>
       <div><dt>Source</dt><dd><a href="https://github.com/Fanzzzd/erainfra">github.com/<wbr>Fanzzzd/<wbr>erainfra</a></dd></div>
       <div><dt>License</dt><dd>MIT</dd></div>
@@ -44,8 +44,8 @@
 <pre><code>jobs:
   test:
     <span class="comment"># was: runs-on: ubuntu-latest</span>
-    runs-on: rc-linux-js</code></pre>
-        <p><code>rc-linux-js</code> is a Profile: a fixed image, CPU and memory size. The workflow never names a machine; EraInfra picks one that is ready for that Profile.</p>
+    runs-on: erainfra-2vcpu-ubuntu-2404</code></pre>
+        <p><code>erainfra-2vcpu-ubuntu-2404</code> is a Profile: an executor, an image pinned by digest, a CPU and memory size. You register Profiles yourself; a new deployment has none. The workflow never names a machine; EraInfra picks one that is ready for that Profile.</p>
       </section>
 
       <section>
@@ -56,7 +56,7 @@
             <tr><th scope="row">Linux x64 and ARM64</th><td data-label="Executor">Firecracker</td><td data-label="Isolation">Own guest kernel per job. Use this for untrusted code. Needs KVM.</td></tr>
             <tr><th scope="row">Linux x64 and ARM64</th><td data-label="Executor">Docker</td><td data-label="Isolation">Shares the host kernel. Only for jobs that trust each other.</td></tr>
             <tr><th scope="row">Apple Silicon macOS</th><td data-label="Executor">Tart</td><td data-label="Isolation">Copy-on-write VM per job, two at a time by default.</td></tr>
-            <tr><th scope="row">Windows x64</th><td data-label="Executor">Hyper-V</td><td data-label="Isolation">One job at a time. The machine is offered work only after it proves Hyper-V works.</td></tr>
+            <tr><th scope="row">Windows x64</th><td data-label="Executor">Hyper-V</td><td data-label="Isolation">Preview. One VM per job, one at a time. The provisioner has not yet run on a real Hyper-V host.</td></tr>
           </tbody>
         </table>
         <ul>
@@ -64,8 +64,9 @@
           <li>Each Worker checks its own isolation. A Worker whose live firewall rules drift from the rendered policy stops taking jobs.</li>
           <li>A Profile can deny all outbound traffic except an allowlist of domains and address ranges, or record what its jobs reach first.</li>
           <li>An optional router job sends a run to GitHub-hosted runners when no machine of yours is free.</li>
-          <li>A job cache that serves <code>actions/cache</code>, <code>setup-node</code> and <code>setup-go</code> from your own storage on Firecracker Profiles.</li>
-          <li>The same machines can also run long-lived apps. A Hub builds and deploys them on <code>git push</code> and serves each one at its own HTTPS address.</li>
+          <li>On Firecracker Profiles, a job cache serves <code>actions/cache</code>, <code>setup-*</code> caching, BuildKit, Turborepo and Go from S3-compatible storage you choose.</li>
+          <li>A dashboard, a command-line tool and an HTTP API show machines, Profiles, runs, per-job CPU and memory, and test results.</li>
+          <li>The same control plane can also deploy long-lived apps to your machines.</li>
         </ul>
         <p>The project's own fleet has run its Linux jobs in Firecracker microVMs since 20 August 2026.</p>
       </section>
@@ -88,7 +89,7 @@
             <tr>
               <th scope="row">Actions Runner Controller</th>
               <td data-label="Choose it when">Your whole fleet already runs Kubernetes. It is the better choice there.</td>
-              <td data-label="EraInfra differs">Targets machines without a cluster, including Macs and machines behind NAT or a home router.</td>
+              <td data-label="EraInfra differs">Needs no cluster, and covers Macs, Windows hosts and machines behind NAT or a home router. Both use GitHub's scale-set protocol.</td>
             </tr>
             <tr>
               <th scope="row">Fireactions</th>
@@ -102,23 +103,25 @@
       <section class="limits">
         <h2>Limits</h2>
         <ul>
-          <li>The control plane, scheduler and dashboard run on Convex, so you need a Convex deployment.</li>
-          <li>Firecracker Workers need KVM and dedicated runtime storage.</li>
+          <li>The control plane, scheduler and dashboard run on a Convex deployment you own. While it is unreachable, no new job is scheduled.</li>
+          <li>Firecracker Workers need KVM and dedicated storage. Docker jobs share the host kernel, so a Docker Profile is for trusted jobs only.</li>
+          <li>The default Linux image has fewer tools than GitHub's <code>ubuntu-latest</code>. The project lists every difference.</li>
+          <li>The job cache and test results work only on Firecracker Profiles.</li>
           <li>macOS Workers run at most two VMs by default, to stay within Apple's virtualization license.</li>
           <li>Self-hosted runners run repository code with that repository's token and secrets. Keep Profiles private to trusted repositories, and do not run pull requests from untrusted forks on machines that hold persistent credentials.</li>
-          <li>The app Hub is a second control plane, separate from the Convex one, and needs a Cloudflare Tunnel for its HTTPS addresses.</li>
-          <li>Version 0.2 is still in release candidates.</li>
+          <li>Windows support is a preview. Version 0.2 is still in release candidates.</li>
         </ul>
       </section>
 
       <section>
         <h2>Get started</h2>
         <ol>
-          <li>Deploy the Convex backend and dashboard from the repository.</li>
-          <li>In the dashboard, open Machines, choose Add machine, and run the generated install command on each host.</li>
-          <li>Point a workflow at a Profile with <code>runs-on</code>.</li>
+          <li>Deploy the Convex backend and dashboard from the latest release tag.</li>
+          <li>Run a controller for your repository. It registers a Profile and listens for its jobs.</li>
+          <li>In the dashboard, add a machine and run the generated install command on it.</li>
+          <li>Point a workflow at the Profile with <code>runs-on</code>.</li>
         </ol>
-        <p><a class="button" href="https://github.com/Fanzzzd/erainfra">Read the setup guide on GitHub</a></p>
+        <p><a class="button" href="https://github.com/Fanzzzd/erainfra#quick-start">Follow the quick start on GitHub</a></p>
       </section>
     </article>
 
