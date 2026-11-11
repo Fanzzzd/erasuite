@@ -159,6 +159,21 @@ Smallest change:
   state and services. The product code keeps no compatibility path for the old names.
   The script is deleted once every device has moved.
 
+External names follow the same spelling. A GitHub App is named for its product, its
+role and the GitHub account it is installed on, because its scope is that account and
+every Profile of the account can use it. Environments and Profiles stay out of the
+name.
+
+| Item | Pattern | Example |
+|---|---|---|
+| Display name | `EraInfra <role> <owner>` | `EraInfra controller Fanzzzd` |
+| Slug | `erainfra-<role>-<owner>` | `erainfra-controller-fanzzzd` |
+| Private key file | `github-app-<owner>.pem` | `/etc/runner-center/github-app-fanzzzd.pem` |
+
+The bielcrystal controller App (`erainfra-controller-bielcrystal`) already follows it.
+GitHub keeps an App's client ID and installation when its name changes, so renaming
+one to fit costs only the slug.
+
 ### 4. Every repository has CI that runs the local gate
 
 Rule: CI runs on every pull request and on `main`, and it runs the same command a
