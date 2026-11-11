@@ -40,32 +40,34 @@
     <article>
       <section>
         <h2>Who it is for</h2>
-        <p>People who run their own servers and want every device reachable from anywhere, with control over which machine their traffic leaves through and what happens when that machine goes down.</p>
+        <p>People who run their own servers and want their computers and phones to send traffic out through those servers, with control over which server comes first and what happens when it goes down.</p>
       </section>
 
       <section>
         <h2>What works today</h2>
         <ul>
-          <li>A Rust core and the <code>fp</code> command-line tool: SOCKS and HTTP proxy, application UDP, a tunneled DNS stub and static port forwards.</li>
-          <li>Devices join by invite, and members can take the exit or relay role.</li>
-          <li>An ordered list of exits. When an exit fails, traffic moves to the next one on the list, and an empty list blocks traffic instead of sending it out directly.</li>
+          <li>Devices join by one-time invite. Members can take the exit, relay or admin role, and a removed device cannot come back with an old member list.</li>
+          <li>A ranked list of exits. New connections use the highest healthy exit, a failed exit is replaced within 3 seconds, and an empty or fully failed list stops traffic instead of sending it out directly.</li>
+          <li>Three kinds of path in one connection: direct UDP, UDP relayed by one of your members, and QUIC carried over TCP when a network blocks UDP.</li>
           <li>Member connections use TLS 1.3 with the hybrid post-quantum key exchange X25519MLKEM768 only. A peer that cannot use it fails the handshake.</li>
-          <li>A full-device tunnel on Linux.</li>
-          <li>Desktop, Android, iPhone and Apple TV apps that share one Rust core instead of reimplementing it.</li>
+          <li>The <code>fp</code> command-line tool: SOCKS5 and HTTP proxy, application UDP, a DNS stub that resolves through the exit, static port forwards, and a proxy list for Clash and mihomo.</li>
+          <li>A full-device tunnel on Linux and macOS that blocks traffic when no exit is healthy. On Windows it runs only in the lab VM so far.</li>
+          <li>In the Linux lab, every network fault passed 3 of 3 runs, including UDP block, a 5-second blackout, address change and exit loss. 900 of 900 fresh connections succeeded at 50 to 250 ms round-trip time and up to 10% loss.</li>
+          <li>Desktop, Android, iPhone and Apple TV apps share one Rust core instead of reimplementing it.</li>
         </ul>
       </section>
 
       <section>
         <h2>Platform evidence</h2>
-        <p>A platform counts as supported only after its app completes the shared acceptance flows on a recorded OS version. None has yet.</p>
+        <p>A platform counts as supported only after its app completes the shared acceptance flows on a recorded OS version. The Linux and Android runners have passed every flow they require. No platform has passed the full product bar yet, which also needs a 24-hour soak, the full fault matrix and a performance comparison on one frozen commit.</p>
         <table class="table table-stack">
-          <thead><tr><th scope="col">Platform</th><th scope="col">What has been shown</th></tr></thead>
+          <thead><tr><th scope="col">Platform</th><th scope="col">What has been shown</th><th scope="col">Not shown yet</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Linux</th><td data-label="Shown">Every desktop flow driven through the app in a lab VM on arm64, including the full-device tunnel and its cleanup.</td></tr>
-            <tr><th scope="row">Android</th><td data-label="Shown">All 5 acceptance flows on the arm64 emulator, including packet transfer and a network change. No physical device yet.</td></tr>
-            <tr><th scope="row">macOS</th><td data-label="Shown">Six app flows completed by hand on arm64. The full-device tunnel is not yet allowed to run.</td></tr>
-            <tr><th scope="row">iPhone and Apple TV</th><td data-label="Shown">Simulator tests pass. No device evidence yet.</td></tr>
-            <tr><th scope="row">Windows</th><td data-label="Shown">The app and tools build. Nothing has run on Windows yet.</td></tr>
+            <tr><th scope="row">Linux</th><td data-label="Shown">All 9 acceptance flows in an arm64 lab VM, with the desktop app driven automatically, including the full tunnel and its cleanup.</td><td data-label="Not yet">x86_64, physical hardware</td></tr>
+            <tr><th scope="row">macOS</th><td data-label="Shown">Six app flows by hand on macOS 26 arm64. Full-tunnel leak tests in a macOS 15 VM with 0 leaked packets.</td><td data-label="Not yet">Full tunnel on a physical Mac, sleep and wake</td></tr>
+            <tr><th scope="row">Windows</th><td data-label="Shown">In one Windows 11 VM: 14 of 14 command-line checks, and 61 of 61 full-tunnel checks with the firewall kill switch. The desktop app connects and runs the full tunnel.</td><td data-label="Not yet">Real hardware, the full tunnel outside the lab VM</td></tr>
+            <tr><th scope="row">Android</th><td data-label="Shown">All 5 acceptance flows on the arm64 emulator with Android 16, including packet transfer and a network change.</td><td data-label="Not yet">A physical device, background and Doze</td></tr>
+            <tr><th scope="row">iPhone and Apple TV</th><td data-label="Shown">The core runs in the iOS and tvOS 26.5 simulators, and packets pass through the tunnel code.</td><td data-label="Not yet">Any device</td></tr>
           </tbody>
         </table>
       </section>
@@ -77,8 +79,23 @@
           <tbody>
             <tr>
               <th scope="row">Tailscale</th>
-              <td data-label="Choose it when">You want a private network that works today on every major platform. It is mature, and it is the better choice now.</td>
-              <td data-label="EraMesh differs">An ordered list of exits that fails closed, relays only through your own members, and QUIC carried over TCP when UDP is blocked.</td>
+              <td data-label="Choose it when">You want a private network that works today on every major platform, with signed apps, admin tools and support. It is mature, and it is the better choice now.</td>
+              <td data-label="EraMesh differs">No coordination service to depend on, relays only through your own members, and failover through an exit list you rank.</td>
+            </tr>
+            <tr>
+              <th scope="row">Headscale with Tailscale clients</th>
+              <td data-label="Choose it when">You want Tailscale's mature clients with a coordination server you host yourself.</td>
+              <td data-label="EraMesh differs">You run no server. The admin device holds the network key, and members share the signed member list among themselves.</td>
+            </tr>
+            <tr>
+              <th scope="row">WireGuard</th>
+              <td data-label="Choose it when">You want a small, fast tunnel between machines you configure by hand. It is in the Linux kernel and has clients everywhere.</td>
+              <td data-label="EraMesh differs">Adds invites, roles, exit failover, member relays and QUIC over TCP when UDP is blocked.</td>
+            </tr>
+            <tr>
+              <th scope="row">ZeroTier or Nebula</th>
+              <td data-label="Choose it when">You want every device to get an address on a virtual network, with NAT traversal, proven at scale.</td>
+              <td data-label="EraMesh differs">Focuses on exits: a ranked list that fails closed. It gives devices no addresses and does no NAT traversal yet.</td>
             </tr>
             <tr>
               <th scope="row">Hysteria 2</th>
@@ -92,10 +109,13 @@
       <section class="limits">
         <h2>Limits</h2>
         <ul>
-          <li>No platform has passed full acceptance testing. The Windows build has never run on Windows.</li>
-          <li>The full-device tunnel stays off on macOS and Windows until leak prevention is in place.</li>
-          <li>When an exit fails, open TCP connections that went through it can reset. New connections use the next exit.</li>
-          <li>There is no release and no public source yet.</li>
+          <li>No release, no packages and no signed apps. The source is not public yet.</li>
+          <li>No platform has passed the full product bar: the 24-hour soak, the full fault matrix and the performance comparison are not done.</li>
+          <li>Devices get no network addresses of their own, so you cannot reach another member by address. Traffic goes from a device out through an exit.</li>
+          <li>No NAT traversal yet. A device connects only to members it can reach directly, or through a relay member both sides can reach.</li>
+          <li>Only the admin that created the network can redeem invites, so it must be online when a device joins.</li>
+          <li>When an exit fails, open TCP connections through it reset. New connections use the next exit.</li>
+          <li>The Windows full tunnel refuses to start outside the lab VM. iPhone and Apple TV have no device runs yet.</li>
         </ul>
       </section>
 
