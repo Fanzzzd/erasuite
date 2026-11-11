@@ -1,8 +1,16 @@
 import assert from "node:assert/strict";
+
 import worker from "../src/worker.js";
 
 const seen = [];
-const env = { ASSETS: { fetch: async (req) => { seen.push(new URL(req.url)); return new Response("asset"); } } };
+const env = {
+  ASSETS: {
+    fetch: async (req) => {
+      seen.push(new URL(req.url));
+      return new Response("asset");
+    },
+  },
+};
 const get = (url) => worker.fetch(new Request(url), env);
 
 let r = await get("https://www.erasuite.dev/x?y=1");

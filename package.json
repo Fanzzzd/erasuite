@@ -3,8 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "test": "node test/worker.test.mjs",
-    "deploy": "node test/worker.test.mjs && wrangler deploy"
+    "check": "npm run lint && npm run check:prose && npm test",
+    "check:prose": "! git grep -nP '\\x{2014}' -- '*.md' '*.html'",
+    "dev": "npx --yes wrangler@4.54.0 dev",
+    "format": "npx --yes oxfmt@0.66.0 src test package.json",
+    "lint": "npx --yes oxlint@1.81.0 src test && npx --yes oxfmt@0.66.0 --check src test package.json",
+    "test": "node test/worker.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }
