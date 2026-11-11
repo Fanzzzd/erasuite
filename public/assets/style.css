@@ -466,6 +466,7 @@ code {
   margin: 0.125rem 0 0;
   font-weight: 600;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .facts a {

@@ -323,6 +323,21 @@ Smallest change: EraMesh renames `PROJECT.md` to `ROADMAP.md` and adds `CONTEXT.
 commit and `//nolint` rules exist only in history and config comments) and
 `CHANGELOG.md`, and moves `SPEC.md` to `docs/`.
 
+Changelogs. A repository that releases versioned packages generates `CHANGELOG.md`
+with Changesets. Every pull request that changes a released package adds
+`.changeset/<name>.md`, and CI fails a pull request without one
+(`changeset status --since=origin/main`); internal changes add an empty changeset.
+Releases run `changeset version`; nobody edits the changelog by hand. EraInfra adopts
+this in Fanzzzd/erainfra#290, with its product packages in one `fixed` group. EraDB
+releases 22 packages and should move to it before its first npm publish. EraMesh
+releases no packages yet and keeps a hand-written `CHANGELOG.md`.
+
+Every changelog entry, from either source:
+- is written for the person who runs the software, in plain sentences;
+- describes one user-visible change, so one change gets one entry;
+- names the issue or pull request number when one exists;
+- leaves out internal jargon and review-round IDs.
+
 ### 9. Plain writing in docs and comments
 
 Rule: short sentences with active verbs. State limits and unshipped behavior plainly.
@@ -628,6 +643,7 @@ Ordered by value per unit of effort. The first items take minutes.
    (Swift rules).
 9. Pin GitHub Actions by commit SHA instead of tags, move to pnpm 12.18.0 and
    Turborepo 2.11.10, and add `.node-version` (rule 11).
+10. Move the changelog to Changesets before the first npm publish (rule 8).
 
 ### EraInfra
 
@@ -635,8 +651,9 @@ Ordered by value per unit of effort. The first items take minutes.
 2. Fix the stale path in `CONTEXT.md:41` and translate the comment at
    `packages/cli/portless.mjs:916-918` (rules 6 and 8).
 3. Copy EraDB's Oxfmt settings into `.oxfmtrc.json` (TypeScript rules).
-4. Add `AGENTS.md`, `CONTRIBUTING.md` and `CHANGELOG.md`, and move `SPEC.md` to
-   `docs/` (rule 8).
+4. Add `AGENTS.md` and `CONTRIBUTING.md`, and move `SPEC.md` to `docs/`. Generate
+   `CHANGELOG.md` with Changesets (Fanzzzd/erainfra#290) instead of writing it by
+   hand (rule 8).
 5. Add a pull request title check limited to 72 characters (rule 7).
 6. Replace em dashes in `README.md`, `CONTEXT.md` and the ADRs, rewrite the
    "Why it holds up" heading as plain text, and add the U+2014 check (rule 9).
