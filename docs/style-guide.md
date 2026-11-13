@@ -495,6 +495,10 @@ Behaviour comes from one library per stack. React apps that need popups, menus,
 tabs or toasts use Vercel's UI SDK (`@ui-sdk/react` with `@ui-sdk/core`), which is
 headless, so the tokens supply all of the look. It is in beta (`0.1.0-beta.1`,
 published 2026-11-12), so pin it exactly and read its changelog before each bump.
+pnpm 12 holds back releases younger than its minimum release age, so the first
+install needs a commented `minimumReleaseAgeExclude` entry in `pnpm-workspace.yaml`;
+remove it once the pinned version is older than the limit. UI SDK popups use the
+browser Popover API, which current Chrome, Edge, Firefox and Safari support.
 Two exceptions:
 
 - The EraDB dashboard keeps its own tested dialog and tabs. It is a library with a
@@ -671,13 +675,13 @@ trim_trailing_whitespace = false
 
 Ordered by value per unit of effort. The first items take minutes.
 
-Status on 2026-11-11:
+Status on 2026-11-13:
 
 | Repository | State |
 |---|---|
-| EraDB | Every item is on `convex-maturity` except shared client conformance fixtures with their ADR (item 7) and the move to Changesets (item 10). |
-| EraInfra | Every item is on `main`: Fanzzzd/erainfra#291, #294, #296, #297, #298 and #299, plus the README rewrite in #300 and #301. |
-| EraMesh | Items 1 to 6 and the code-level rename are on `feat/quic-connection-resilience`. The runtime rename waits on branch `era/rename-runtime` for one planned production migration with `scripts/migrate-from-fastpipe.sh`. Items 7 and 9 (status wording in one place, splitting `mesh/src/node.rs`) are open. |
+| EraDB | Every item is on `convex-maturity` except shared client conformance fixtures with their ADR (item 7) and the move to Changesets (item 10). The rule 13 restyle (item 11) is on `convex-maturity` at `c4eb3284`. |
+| EraInfra | Every item is on `main`: Fanzzzd/erainfra#291, #294, #296, #297, #298 and #299, plus the README rewrite in #300 and #301, and the rule 13 restyle with UI SDK in #370 and #371. |
+| EraMesh | Items 1 to 6 and the code-level rename are on `feat/quic-connection-resilience`. The runtime rename waits on branch `era/rename-runtime` for one planned production migration with `scripts/migrate-from-fastpipe.sh`. Items 7 and 9 (status wording in one place, splitting `mesh/src/node.rs`) are open. The rule 13 restyle (item 10) is merged into `feat/quic-connection-resilience` and goes out with that branch's next push. |
 | Site | Done. |
 
 ### EraMesh
