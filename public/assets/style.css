@@ -491,7 +491,8 @@ code {
   margin-top: 3rem;
 }
 
-.product h2 {
+.product h2,
+.screens h2 {
   font-size: 1.625rem;
   font-weight: 750;
   font-stretch: 112%;
@@ -578,6 +579,56 @@ code {
 .table td:last-child,
 .table th:last-child {
   padding-right: 0;
+}
+
+/* Screenshots of each product, between the band and the text. A click opens
+   the full-resolution capture. */
+.screens {
+  max-width: calc(66rem + 2 * var(--gutter));
+  padding: clamp(2.5rem, 5vw, 4rem) var(--gutter) 0;
+}
+
+.screen {
+  margin: 0;
+}
+
+.screen a {
+  display: block;
+}
+
+.screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #ffffff;
+  border: 1px solid var(--rule-faint);
+}
+
+.screen figcaption {
+  max-width: var(--measure);
+  margin-top: 0.625rem;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.screen-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem clamp(1.5rem, 3vw, 2.5rem);
+  margin-top: 2rem;
+}
+
+.screens-note {
+  max-width: var(--measure);
+  margin: 1.5rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 52rem) {
+  .screen-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* Limits get a hatched rule, the map symbol for a disturbed zone. */

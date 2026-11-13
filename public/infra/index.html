@@ -36,6 +36,25 @@
     </dl>
   </div>
 
+  <section class="screens" aria-labelledby="screens-title">
+    <h2 id="screens-title">What it looks like</h2>
+    <figure class="screen">
+      <a href="screens/machines-2x.webp"><img src="screens/machines.webp" srcset="screens/machines.webp 1280w, screens/machines-2x.webp 2560w" sizes="(min-width: 72rem) 66rem, 92vw" width="1280" height="800" alt="EraInfra dashboard Machines page. The Runner Profiles table lists two Profiles with their controller, Firecracker or Tart isolation, egress policy, resources and free capacity. The Registered fleet table lists three online machines with their slots and active runs."></a>
+      <figcaption>Workflows target a Profile, never a machine. Each Profile shows its isolation boundary, egress policy, size and free capacity, and the fleet below shows what each machine is running.</figcaption>
+    </figure>
+    <div class="screen-pair">
+      <figure class="screen">
+        <a href="screens/runs-2x.webp"><img src="screens/runs.webp" srcset="screens/runs.webp 1280w, screens/runs-2x.webp 2560w" sizes="(min-width: 72rem) 32rem, (min-width: 52rem) 45vw, 92vw" width="1280" height="800" loading="lazy" alt="Runs page listing job attempts as running, preparing, pending and completed, each with its Profile, repository and job, machine, executor, and queue and run times."></a>
+        <figcaption>Every job attempt with its state, machine, executor, queue wait and run time.</figcaption>
+      </figure>
+      <figure class="screen">
+        <a href="screens/run-resources-2x.webp"><img src="screens/run-resources.webp" srcset="screens/run-resources.webp 1280w, screens/run-resources-2x.webp 2560w" sizes="(min-width: 72rem) 32rem, (min-width: 52rem) 45vw, 92vw" width="1280" height="800" loading="lazy" alt="Details of a finished CI test run: CPU p95 of 3.7 of 4 vCPU, a memory peak of 6.8 of 16 GiB, and charts of CPU, memory, network and disk use over the run."></a>
+        <figcaption>A finished run's CPU, memory, network and disk use against the size its Profile allotted.</figcaption>
+      </figure>
+    </div>
+    <p class="screens-note">Screens from the development build of the dashboard on 2026-11-14. Repositories, machines and numbers are sample data, not a real fleet. Select a screen to open it at full size.</p>
+  </section>
+
   <div class="product" style="--tone: var(--olivine)">
     <article>
       <section>

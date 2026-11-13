@@ -70,6 +70,11 @@ compares, limits, and how to get it. The pages follow three rules:
 - A version that changes often links to the product's releases instead of being
   copied.
 
+Under "What it looks like", each product page shows three screens of its interface
+from `public/<product>/screens/`. Each screen is a WebP at 1x and 2x, captured with
+Playwright in the light theme from a development build. The data in them is sample
+data. Retake the screens when the interface changes.
+
 On the home page each product is a bed in a rock section, newest on top. A bed's
 width shows its release stage: 40% in development, 70% release candidate, 100% public
 releases. The `--maturity` value sets it in `public/index.html` and in the side

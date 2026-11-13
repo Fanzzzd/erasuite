@@ -36,6 +36,25 @@
     </dl>
   </div>
 
+  <section class="screens" aria-labelledby="screens-title">
+    <h2 id="screens-title">What it looks like</h2>
+    <figure class="screen">
+      <a href="screens/health-2x.webp"><img src="screens/health.webp" srcset="screens/health.webp 1280w, screens/health-2x.webp 2560w" sizes="(min-width: 72rem) 66rem, 92vw" width="1280" height="800" alt="EraDB dashboard Health page: a failure rate of 2.6% over 38 invocations, 0 ms scheduler lag, an insight that sync.importIssues failed 1 of 4 calls, and a table of functions with invocations, errors and p95 latency."></a>
+      <figcaption>Health for one Deployment: failure rate, scheduler lag and write conflicts, then errors and p95 latency for each function.</figcaption>
+    </figure>
+    <div class="screen-pair">
+      <figure class="screen">
+        <a href="screens/data-2x.webp"><img src="screens/data.webp" srcset="screens/data.webp 1280w, screens/data-2x.webp 2560w" sizes="(min-width: 72rem) 32rem, (min-width: 52rem) 45vw, 92vw" width="1280" height="800" loading="lazy" alt="Data page with the tasks table selected, listing document IDs, creation times, titles and project IDs, with filter, index sort and bulk edit controls."></a>
+        <figcaption>Browse and edit the documents of each table, sorted by any index.</figcaption>
+      </figure>
+      <figure class="screen">
+        <a href="screens/functions-2x.webp"><img src="screens/functions.webp" srcset="screens/functions.webp 1280w, screens/functions-2x.webp 2560w" sizes="(min-width: 72rem) 32rem, (min-width: 52rem) 45vw, 92vw" width="1280" height="800" loading="lazy" alt="Functions page running the query tasks.openByProject with empty JSON arguments. The result lists four projects with their open task counts."></a>
+        <figcaption>Run a function with JSON arguments, optionally acting as a user, and read its result and request ID.</figcaption>
+      </figure>
+    </div>
+    <p class="screens-note">Screens from the development build of the standalone dashboard on 2026-11-13, running a small sample task tracker on a local PostgreSQL. The numbers come from real calls made for these screens. Select a screen to open it at full size.</p>
+  </section>
+
   <div class="product" style="--tone: var(--basalt)">
     <article>
       <section>

@@ -19,3 +19,5 @@ Read [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md) first.
 - [design/era-tokens.css](design/era-tokens.css) is copied byte for byte into each
   product interface (style-guide rule 13). Change it only together with its version
   line, and copy it into every product in the same week.
+- Screens under `public/<product>/screens/` show sample data only: no real host
+  names, people, paths or addresses. Use example.com and the RFC 5737 address ranges.

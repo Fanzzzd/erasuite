@@ -51,6 +51,8 @@ npm run dev       # 在 http://localhost:8787 预览 Worker
 - 限制部分写明还做不到的事，赶在读者自己发现之前。
 - 经常变化的版本号链接到产品的发布页，不手抄。
 
+每个产品页的“What it looks like”部分展示三张界面截图，文件在 `public/<产品>/screens/`。每张截图有 1 倍和 2 倍两个 WebP 版本，由 Playwright 以浅色主题从开发版本截取，图中数据均为示例数据。界面改动后需要重新截图。
+
 首页把每个产品画成岩层剖面里的一层，最新的在最上面。层的宽度表示发布阶段：开发中 40%，候选版本 70%，正式发布 100%。宽度由 `public/index.html` 和每个产品页侧栏里的 `--maturity` 值决定，所以这四个文件要一起改。
 
 Archivo 字体自托管在 `public/assets/fonts/`，使用 SIL Open Font License（见 [`OFL.txt`](public/assets/fonts/OFL.txt)）。
