@@ -16,3 +16,6 @@ Read [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md) first.
 - [docs/style-guide.md](docs/style-guide.md) is the code style guide for every Era
   repository. A change to it changes the rules for EraMesh, EraDB and EraInfra too,
   so keep its file and line citations accurate.
+- [design/era-tokens.css](design/era-tokens.css) is copied byte for byte into each
+  product interface (style-guide rule 13). Change it only together with its version
+  line, and copy it into every product in the same week.

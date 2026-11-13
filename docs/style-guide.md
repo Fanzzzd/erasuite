@@ -456,6 +456,67 @@ track the count with a report that does not block
 unwraps with `expect("<name> lock poisoned")` or `parking_lot` locks. When a crate
 reaches zero, set `unwrap_used = "deny"` in its `[lints.clippy]`.
 
+### 13. Every product interface uses the Era tokens and one component look
+
+Rule: the web interfaces (the EraInfra dashboard, the EraDB dashboard and the
+EraMesh desktop app) take every colour, type size, space, radius and duration from
+[`design/era-tokens.css`](../design/era-tokens.css) in this repository. Each product
+keeps a byte-for-byte copy and does not edit it. A change starts here: bump the
+version line, run `npm run check`, then copy the file into each product in the same
+week.
+
+- Scope: the tokens apply only to an element with `data-era-product="mesh"`, `"db"`
+  or `"infra"`, which also selects the product's accent. That way the embedded EraDB
+  dashboard leaves its host page alone.
+- Theme: light and dark follow the system. `data-era-theme="light"` or `"dark"`
+  forces one.
+- Contrast: every text colour meets WCAG 2.2 AA (4.5:1) on every background of its
+  theme, and strong borders meet 3:1. `design/check-tokens.mjs` checks this in
+  `npm run check`.
+- Colour sources: the palette is the site's. The page background is a lighter step
+  of the site's paper (`--era-sunken` is the paper itself), `--era-text` is its
+  ink, and each product accent is the mineral colour of its rock bed: amethyst for
+  EraMesh, basalt for EraDB, olivine for EraInfra.
+
+The component look, which every product implements the same way:
+
+| Part | Look |
+|---|---|
+| Header | A 3px band in `--era-accent` along the top edge; the product name in `--era-font-display` (Archivo), weight 700; no logo image |
+| Buttons | `--era-control-height`, `--era-radius`, 12px side padding, weight 500. Primary: accent fill with `--era-accent-ink`. Secondary: surface fill with a `--era-border-strong` edge. Danger: `--era-danger` |
+| Inputs | Same height and radius as buttons, surface fill, `--era-border-strong` edge |
+| Focus | A `--era-focus-width` outline in `--era-focus`, offset by `--era-focus-offset`, on `:focus-visible` |
+| Panels | Surface fill, 1px `--era-border`, `--era-radius-lg`, no shadow. Only popups (menus, dialogs, tooltips, toasts) are raised and use `--era-shadow` |
+| Tables | Muted header text in sentence case, a 1px row rule, tabular numbers |
+| Status | `--era-radius-sm` badges on the `*-soft` fill with the matching status colour |
+| Motion | Opacity and transform only, `--era-duration`, which drops to 0 under `prefers-reduced-motion` |
+
+Behaviour comes from one library per stack. React apps that need popups, menus,
+tabs or toasts use Vercel's UI SDK (`@ui-sdk/react` with `@ui-sdk/core`), which is
+headless, so the tokens supply all of the look. It is in beta (`0.1.0-beta.1`,
+published 2026-11-12), so pin it exactly and read its changelog before each bump.
+Two exceptions:
+
+- The EraDB dashboard keeps its own tested dialog and tabs. It is a library with a
+  React `^18 || ^19` peer range, and UI SDK needs React 19.
+- The EraMesh desktop app has no bundler. It uses native `<dialog>` and `<details>`.
+
+Why: the four surfaces had four palettes, four font stacks and three accent blues
+and greens that matched nothing on erasuite.dev. A user who moves from the site to
+any product should see one family.
+
+Follows: the site, which is the source of the palette.
+
+Does not, at EraInfra `aa8534e`, EraDB `3ab3da13` and EraMesh `c0fb1da`
+(2026-11-13): the EraInfra dashboard is a dark-only shadcn/ui theme with an emerald
+accent (`apps/dashboard/src/styles.css:18-52`). The EraDB dashboard has its
+own light palette with a `#2743c7` accent and a black sidebar
+(`packages/dashboard/src/ui/styles.ts:5-9`). The EraMesh desktop app has a third
+palette with a `#1f6f5f` accent (`desktop/src/style.css:1-15`).
+
+Smallest change: copy the tokens file, map each app's variables onto it, and restyle
+the shared parts in the table above.
+
 ## Where the repositories already agree
 
 Keep these. They need no change.
@@ -569,10 +630,12 @@ Keep these. They need no change.
 - PowerShell gets PSScriptAnalyzer. EraInfra only parse-checks it today
   (`.github/workflows/ci.yml:169`).
 
-### HTML and CSS (the site)
+### HTML and CSS
 
-- Plain HTML and CSS, no framework, no build step. No requests to other domains:
-  fonts are self-hosted under `public/assets/fonts/`.
+- Product interfaces follow rule 13. Each one ships its fonts and loads nothing from
+  other domains.
+- The site is plain HTML and CSS, with no framework and no build step. It makes no
+  requests to other domains: fonts are self-hosted under `public/assets/fonts/`.
 - Every page has a skip link, visible focus, and motion only inside
   `prefers-reduced-motion: no-preference`.
 - Product facts come from that product's README and are updated when its status
@@ -636,6 +699,7 @@ Status on 2026-11-11:
    state paths and protocol identifiers, and move the live exit with the migration
    script (rule 3).
 9. Split `mesh/src/node.rs` along its seams (rule 5).
+10. Restyle `desktop/src` on the Era tokens (rule 13).
 
 ### EraDB
 
@@ -656,6 +720,7 @@ Status on 2026-11-11:
 9. Pin GitHub Actions by commit SHA instead of tags, move to pnpm 12.18.0 and
    Turborepo 2.11.10, and add `.nvmrc` (rule 11).
 10. Move the changelog to Changesets before the first npm publish (rule 8).
+11. Restyle `packages/dashboard` on the Era tokens (rule 13).
 
 ### EraInfra
 
@@ -672,6 +737,8 @@ Status on 2026-11-11:
 7. Move the logrus and stdlib `log` call sites to `log/slog` (Go rules).
 8. Split `runtime_linux.go`, `gitmirror.go` and `cli/infra.go` (rule 5).
 9. Move to pnpm 12.18.0 and add `.nvmrc` (rule 11).
+10. Restyle `apps/dashboard` on the Era tokens, and replace Radix and sonner with
+    UI SDK (rule 13).
 
 ### Site
 

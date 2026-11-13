@@ -8,6 +8,8 @@ Run `npm run check` before you push. It runs:
 - the Oxfmt format check over `src/`, `test/` and `package.json` (`npm run format`
   fixes it);
 - the prose check, which fails on an em dash (U+2014) in any Markdown or HTML file;
+- the token check, which fails when a colour in `design/era-tokens.css` misses its
+  contrast target;
 - the routing tests in `test/worker.test.mjs`.
 
 CI runs the same script, so a pass here means a pass there.

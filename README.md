@@ -4,7 +4,9 @@
 
 This repository is the website for Era Suite: a home page and one page each for
 EraMesh, EraDB and EraInfra. It also holds the code style guide that all Era
-repositories follow, in [docs/style-guide.md](docs/style-guide.md).
+repositories follow, in [docs/style-guide.md](docs/style-guide.md), and the design
+tokens that every product interface copies, in
+[design/era-tokens.css](design/era-tokens.css).
 
 The site is plain HTML and CSS. A Cloudflare Worker serves it with static assets. It
 has no build step and no runtime dependencies, sets no cookies, and loads nothing
@@ -24,7 +26,7 @@ You need Node 22.13 or later. `.nvmrc` pins 22.23.4, which nvm, fnm and mise pic
 ```sh
 git clone https://github.com/Fanzzzd/erasuite.git
 cd erasuite
-npm run check     # lint, format check, prose check, routing tests
+npm run check     # lint, format, prose and token checks, routing tests
 npm run dev       # Worker preview at http://localhost:8787
 ```
 

@@ -2,7 +2,7 @@
 
 [English](README.md) · [erasuite.dev](https://erasuite.dev/)
 
-这是 Era Suite 的官网仓库：一个首页，加上 EraMesh、EraDB 和 EraInfra 各一个产品页。所有 Era 仓库共用的代码风格指南也放在这里，见 [docs/style-guide.md](docs/style-guide.md)。
+这是 Era Suite 的官网仓库：一个首页，加上 EraMesh、EraDB 和 EraInfra 各一个产品页。所有 Era 仓库共用的代码风格指南也放在这里，见 [docs/style-guide.md](docs/style-guide.md)；各产品界面复制使用的设计变量见 [design/era-tokens.css](design/era-tokens.css)。
 
 网站是纯 HTML 和 CSS，由 Cloudflare Worker 以静态资源方式提供。没有构建步骤，没有运行时依赖，不设 Cookie，也不从其他域名加载任何内容。
 
@@ -20,7 +20,7 @@
 ```sh
 git clone https://github.com/Fanzzzd/erasuite.git
 cd erasuite
-npm run check     # 代码检查、格式检查、文字检查、路由测试
+npm run check     # 代码检查、格式检查、文字检查、颜色对比度检查、路由测试
 npm run dev       # 在 http://localhost:8787 预览 Worker
 ```
 
