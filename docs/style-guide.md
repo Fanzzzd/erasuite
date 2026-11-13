@@ -551,8 +551,9 @@ Keep these. They need no change.
   file. Turning on `sortImports` in EraInfra reorders imports in 290 of 385 files;
   land it as its own commit.
 - Lint with Oxlint, `correctness` and `suspicious` as errors, warnings denied, plus the
-  type-aware pass for floating and misused promises (EraDB `.oxlintrc.json:15-21`,
-  `.oxlintrc.type-aware.json:29-33`).
+  type-aware pass (`oxlint-tsgolint`, `options.typeAware: true`) for floating and
+  misused promises. EraDB `.oxlintrc.json:15-22,107-125` at `32288860` is the model;
+  EraInfra adopted it in Fanzzzd/erainfra#379.
 - `tsconfig` enables `strict`, `noUncheckedIndexedAccess`,
   `exactOptionalPropertyTypes` and `verbatimModuleSyntax` (EraDB
   `tsconfig.base.json:6-9`).
@@ -680,12 +681,12 @@ trim_trailing_whitespace = false
 
 Ordered by value per unit of effort. The first items take minutes.
 
-Status on 2026-11-13:
+Status on 2026-11-14:
 
 | Repository | State |
 |---|---|
 | EraDB | Every item is on `convex-maturity` except shared client conformance fixtures with their ADR (item 7) and the move to Changesets (item 10). The rule 13 restyle (item 11) is on `convex-maturity` at `c4eb3284`. |
-| EraInfra | Every item is on `main`: Fanzzzd/erainfra#291, #294, #296, #297, #298 and #299, plus the README rewrite in #300 and #301, and the rule 13 restyle with UI SDK in #370 and #371. |
+| EraInfra | Every item is on `main`: Fanzzzd/erainfra#291, #294, #296, #297, #298 and #299, plus the README rewrite in #300 and #301, the rule 13 restyle with UI SDK in #370 and #371, and the type-aware Oxlint pass in #379. |
 | EraMesh | Items 1 to 6 and the code-level rename are on `feat/quic-connection-resilience`. The runtime rename waits on branch `era/rename-runtime` for one planned production migration with `scripts/migrate-from-fastpipe.sh`. Items 7 and 9 (status wording in one place, splitting `mesh/src/node.rs`) are open. The rule 13 restyle (item 10) is merged into `feat/quic-connection-resilience` and goes out with that branch's next push. |
 | Site | Done. |
 
@@ -748,6 +749,8 @@ Status on 2026-11-13:
 9. Move to pnpm 12.18.0 and add `.nvmrc` (rule 11).
 10. Restyle `apps/dashboard` on the Era tokens, and replace Radix and sonner with
     UI SDK (rule 13).
+11. Move to Oxlint 1.93.0 and Oxfmt 0.78.0, and turn on the type-aware pass with
+    `--deny-warnings` (TypeScript rules, rule 11).
 
 ### Site
 
