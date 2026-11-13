@@ -7,8 +7,8 @@
     "check:prose": "! git grep -nP '\\x{2014}' -- '*.md' '*.html'",
     "check:tokens": "node design/check-tokens.mjs",
     "dev": "npx --yes wrangler@4.54.0 dev",
-    "format": "npx --yes oxfmt@0.66.0 src test design/check-tokens.mjs package.json",
-    "lint": "npx --yes oxlint@1.81.0 src test design && npx --yes oxfmt@0.66.0 --check src test design/check-tokens.mjs package.json",
+    "format": "npx --yes oxfmt@0.78.0 src test design/check-tokens.mjs package.json",
+    "lint": "npx --yes oxlint@1.93.0 src test design && npx --yes oxfmt@0.78.0 --check src test design/check-tokens.mjs package.json",
     "test": "node test/worker.test.mjs"
   },
   "engines": {

@@ -407,7 +407,8 @@ No repository has a Node version file; EraDB names Node 22.21.1 in its docs. Era
 refers to actions by tag, for example `actions/checkout@v4`
 (`.github/workflows/release-candidate.yml:30-34`).
 
-Decision: these pins, set on 2026-11-10, move together in all repositories.
+Decision: these pins, set on 2026-11-10 and extended to the lint tools on
+2026-11-14, move together in all repositories.
 
 | Tool | Pin | Where |
 |---|---|---|
@@ -415,6 +416,9 @@ Decision: these pins, set on 2026-11-10, move together in all repositories.
 | Turborepo | 2.11.10 | root `devDependencies` |
 | Node | 22.23.4 to run, `>=22.13.0` to install | `.nvmrc`, `engines.node` |
 | Rust | 1.98.1, with every target the repository builds | `rust-toolchain.toml` |
+| Oxlint | 1.93.0, with `oxlint-tsgolint` 7.0.2007 for the type-aware pass | root `devDependencies`; the site runs it through `npx` |
+| Oxfmt | 0.78.0 | root `devDependencies`; the site runs it through `npx` |
+| TypeScript | 7.0.2 to type-check. 6.0.3 only for a package that imports the compiler's JavaScript API, such as EraDB's `packages/compiler` and `packages/client-interface` | `devDependencies` or the pnpm catalog |
 | `actions/checkout` | `3d3c42e5aac5ba805825da76410c181273ba90b1` (v7.0.1) | workflows |
 | `actions/setup-node` | `949feb2413d6458794dcd2491c4babbbce0c15c1` (v7.1.0), with `node-version-file: .nvmrc` | workflows |
 
@@ -557,6 +561,7 @@ Keep these. They need no change.
   descriptions (`CONTRIBUTING.md:76-77`); that check is the model.
 - Plain JavaScript files (EraMesh `desktop/src/main.js`, the site's `src/worker.js`)
   get the same Oxfmt and Oxlint run. They do not need TypeScript.
+  The type-aware pass needs TypeScript sources, so it does not apply to them.
 
 ### Rust
 
