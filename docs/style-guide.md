@@ -10,14 +10,14 @@ with a decision. Per-language rules and an adoption checklist per repository fol
 
 ## Sources
 
-The review read these checkouts on 2026-11-10. Line numbers refer to these commits.
+The review read these repositories on 2026-11-10. Line numbers refer to these commits.
 
-| Product | Checkout | Commit |
+| Product | Repository | Commit |
 |---|---|---|
-| EraMesh | `~/code/personal/fastpipe` | `c1cc5ad` |
-| EraDB | `~/code/personal/EraDB` | `f9706762` |
-| EraInfra | `~/code/personal/erainfra` | `0cac4d5` (branch `fix/thinpool-keep-metadata-on-boot`) |
-| Site | this repository | `e167c29` |
+| EraMesh | `Fanzzzd/eramesh` | `c1cc5ad` |
+| EraDB | `Fanzzzd/eradb` | `f9706762` |
+| EraInfra | `Fanzzzd/erainfra` | `0cac4d5` (branch `fix/thinpool-keep-metadata-on-boot`) |
+| Site | `Fanzzzd/erasuite` | `e167c29` |
 
 Counts such as "189 `unwrap()` calls" come from `rg` and `wc` over tracked files,
 excluding vendored code and, where stated, tests. They are approximate. Nothing was
@@ -154,12 +154,14 @@ Smallest change:
 
   The owner runs every EraMesh device, so the names a running system holds change
   too: the `fp` CLI becomes `eramesh`, `FP_*` variables become `ERAMESH_*`, and state
-  paths, service names and protocol identifiers move to `eramesh`. All devices update
-  together, and one script, `scripts/migrate-from-fastpipe.sh`, moves the live exit's
-  state and services. The product code keeps no compatibility path for the old names.
-  The script is deleted once every device has moved.
+  paths, service names and protocol identifiers move to `eramesh`. Both devices moved
+  together on 2026-11-12 to the EraMesh build of `6b9bb74`, through a launchd one-shot
+  kept outside the repository (EraMesh `docs/operations.md:15`). The product code keeps
+  no compatibility path for the old names.
 
-External names follow the same spelling. A GitHub App is named for its product, its
+External names follow the same spelling. Repository names are the lowercase package
+spelling: `Fanzzzd/eramesh`, `Fanzzzd/eradb`, `Fanzzzd/erainfra` and `Fanzzzd/erasuite`.
+Each description reads `<Product>: <the one-liner from its erasuite.dev page>`. A GitHub App is named for its product, its
 role and the GitHub account it is installed on, because its scope is that account and
 every Profile of the account can use it. Environments and Profiles stay out of the
 name.
@@ -681,13 +683,13 @@ trim_trailing_whitespace = false
 
 Ordered by value per unit of effort. The first items take minutes.
 
-Status on 2026-11-14:
+Status on 2026-11-20:
 
 | Repository | State |
 |---|---|
 | EraDB | Every item is on `convex-maturity` except shared client conformance fixtures with their ADR (item 7) and the move to Changesets (item 10). The rule 13 restyle (item 11) is on `convex-maturity` at `c4eb3284`. |
 | EraInfra | Every item is on `main`: Fanzzzd/erainfra#291, #294, #296, #297, #298 and #299, plus the README rewrite in #300 and #301, the rule 13 restyle with UI SDK in #370 and #371, and the type-aware Oxlint pass in #379. |
-| EraMesh | Items 1 to 6 and the code-level rename are on `feat/quic-connection-resilience`. The runtime rename waits on branch `era/rename-runtime` for one planned production migration with `scripts/migrate-from-fastpipe.sh`. Items 7 and 9 (status wording in one place, splitting `mesh/src/node.rs`) are open. The rule 13 restyle (item 10) is merged into `feat/quic-connection-resilience` and goes out with that branch's next push. |
+| EraMesh | Items 1 to 6, the full rename (item 8) and the rule 13 restyle (item 10) are on `main`. Both devices run the renamed build since 2026-11-12. Items 7 and 9 (status wording in one place, splitting `mesh/src/node.rs`, 4,609 lines) are open. |
 | Site | Done. |
 
 ### EraMesh
@@ -706,8 +708,8 @@ Status on 2026-11-14:
    manifests (rule 8).
 7. Move status wording into `mesh/src/app/view.rs` (rule 2).
 8. Rename every identifier to EraMesh, including the CLI, environment variables,
-   state paths and protocol identifiers, and move the live exit with the migration
-   script (rule 3).
+   state paths and protocol identifiers, and move the live devices to the renamed
+   build (rule 3).
 9. Split `mesh/src/node.rs` along its seams (rule 5).
 10. Restyle `desktop/src` on the Era tokens (rule 13).
 
